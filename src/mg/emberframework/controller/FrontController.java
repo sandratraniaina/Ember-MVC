@@ -10,13 +10,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class FrontController extends HttpServlet {
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
         try {
             out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
             out.println("<p>Looking for a web framework? You are in the right place...</p>");
-            out.println("<p> Ember MVC is a Java-based web framework built on top of the Servlet API. It provides a lightweight alternative to Spring MVC, focusing on core functionalities. </p>");
+            out.println(
+                    "<p> Ember MVC is a Java-based web framework built on top of the Servlet API. It provides a lightweight alternative to Spring MVC, focusing on core functionalities. </p>");
             out.println("<span>Your URL : <a href = \' \'> " + request.getRequestURI() + "</a></span>");
         } catch (Exception e) {
             out.println(e);
