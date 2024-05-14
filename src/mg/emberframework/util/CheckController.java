@@ -23,7 +23,7 @@ public class CheckController {
             if (file.isDirectory()) {
                 classes.addAll(CheckController.getClasses(packageName + "." + file.getName()));
             } else {
-                String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
+                String className = packageName + "." + FileUtils.getSimpleFileName(file.getName(), "class");
                 classes.add(Class.forName(className));
             }
         }
