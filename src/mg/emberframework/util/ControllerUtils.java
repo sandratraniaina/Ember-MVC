@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class CheckController {
+public class ControllerUtils {
     public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
         ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -21,7 +21,7 @@ public class CheckController {
         
         for (File file : packageDir.listFiles()) {
             if (file.isDirectory()) {
-                classes.addAll(CheckController.getClasses(packageName + "." + file.getName()));
+                classes.addAll(ControllerUtils.getClasses(packageName + "." + file.getName()));
             } else {
                 String className = packageName + "." + FileUtils.getSimpleFileName(file.getName(), "class");
                 classes.add(Class.forName(className));
