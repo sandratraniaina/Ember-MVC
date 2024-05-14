@@ -2,14 +2,19 @@ package mg.emberframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mg.emberframework.util.ControllerUtils;
 
 public class FrontController extends HttpServlet {
+    private ArrayList<Class<?>> controllerClasses;
 
+    //Class method
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
@@ -35,4 +40,24 @@ public class FrontController extends HttpServlet {
         processRequest(req, resp);
     }
 
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        String packageName = this.getInitParameter("package_name");
+        try {
+            setControllerClasses(ControllerUtils.getControllerClasses(packageName));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Getters and setters
+    public ArrayList<Class<?>> getControllerClasses() {
+        return controllerClasses;
+    }
+
+    public void setControllerClasses(ArrayList<Class<?>> controllerClasses) {
+        this.controllerClasses = controllerClasses;
+    }
 }
