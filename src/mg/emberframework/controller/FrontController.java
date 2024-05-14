@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,17 +23,11 @@ public class FrontController extends HttpServlet {
             out.println("<p>Looking for a web framework? You are in the right place...</p>");
             out.println(
                     "<p> Ember MVC is a Java-based web framework built on top of the Servlet API. It provides a lightweight alternative to Spring MVC, focusing on core functionalities. </p>");
-            out.println("<span>Your URL : <a href = \' \'> " + request.getRequestURI() + "</a></span> <br>");
+            out.println("<span>Your URL : <a href = \' \'> " + request.getRequestURI() + "</a></span> <br><br>");
             out.println("Your controllers :");
             out.println("<ul>");
 
             ArrayList<Class<?>> classes = getControllerClasses();
-            if (classes == null) {
-                ServletContext context = getServletContext();
-                String packageName = context.getInitParameter("package_name");
-                setControllerClasses(ControllerUtils.getControllerClasses(packageName));
-                classes = getControllerClasses();
-            }
 
             for(Class<?> clazz : classes) {
                 out.println("<li>" + clazz.getSimpleName() + "</li>");
@@ -57,9 +50,10 @@ public class FrontController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        String packageName = this.getInitParameter("package_name");
         try {
-            setControllerClasses(ControllerUtils.getControllerClasses(packageName));
+            String packageName = this.getInitParameter("package_name");
+            ArrayList<Class<?>> classes = ControllerUtils.getControllerClasses(packageName);
+            setControllerClasses(classes);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
