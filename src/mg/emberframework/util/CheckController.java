@@ -4,38 +4,31 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 
 public class CheckController {
-    public static List<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
-        List<Class<?>> classes = new ArrayList<>();
+    public static ArrayList<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
+        ArrayList<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
 
-        Enumeration<URL> resources = classLoader.getResources(path);
-        if (resources == null) {
+        URL resource = classLoader.getResource(path);
+
+        if (resource == null) {
             return classes;
         }
 
-        while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            File file = new File(resource.getFile());
-            System.out.println(file.getName());
+        File packageDir = new File(resource.getFile().replace("%20", " "));
+        
+        for (File file : packageDir.listFiles()) {
             if (file.isDirectory()) {
-                classes.addAll(getClasses(packageName + "." + file.getName()));
-            } else if (file.getName().endsWith(".class")) {
-                String className = packageName + '.' + file.getName().replace(".class", "");
+                classes.addAll(CheckController.getClasses(packageName + "." + file.getName()));
+            } else {
+                String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
                 classes.add(Class.forName(className));
             }
         }
+        
         return classes;
-    }
-
-    public static void main(String[] args) throws Exception {
-        System.out.println("Hello World");
-        List<Class<?>> list = getClasses("bin.mg.itu.framework.sprint.controller");
-        System.out.println(list);
     }
 
 }
