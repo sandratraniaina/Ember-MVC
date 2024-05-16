@@ -24,7 +24,9 @@ The repository contains a batch script file to build the project. Run the follow
 ./build.bat
 ```
 
-The script will create a JAR file named **ember_mvc.jar**. Add the file to your project's libraries and it will be ready to use for your web application.
+The script will create a JAR file named **ember_mvc.jar**. Add the file to your project's libraries and it will be ready to use for your web application. 
+
+**Note:** Do not forget to add FrontController inside your **web.xml** file with your controller package as a value.
 
 **Note:** Do not forget to add FrontController inside your **web.xml** file with your controller package as a `init_param` value.
 
