@@ -12,6 +12,7 @@ import mg.emberframework.util.ControllerUtils;
 
 public class FrontController extends HttpServlet {
     private ArrayList<Class<?>> controllerClasses;
+    private boolean checked;
 
     //Class method
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -62,6 +63,14 @@ public class FrontController extends HttpServlet {
     }
 
     // Getters and setters
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
     public ArrayList<Class<?>> getControllerClasses() {
         return controllerClasses;
     }
