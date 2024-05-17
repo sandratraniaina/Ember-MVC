@@ -35,6 +35,10 @@ public class FrontController extends HttpServlet {
             out.println("Your controllers :");
             out.println("<ul>");
 
+            if (!isChecked()) {
+                initVariables();
+            }
+            
             ArrayList<Class<?>> classes = getControllerClasses();
 
             for (Class<?> clazz : classes) {
