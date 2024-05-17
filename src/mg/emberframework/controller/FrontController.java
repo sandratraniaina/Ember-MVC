@@ -14,7 +14,9 @@ public class FrontController extends HttpServlet {
     private ArrayList<Class<?>> controllerClasses;
     private boolean checked;
 
-    //Class method
+    //Class methods
+    
+
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
@@ -39,6 +41,7 @@ public class FrontController extends HttpServlet {
         }
     }
 
+    //Override methods
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
