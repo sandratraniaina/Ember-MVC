@@ -12,10 +12,15 @@ import mg.emberframework.util.ControllerUtils;
 
 public class FrontController extends HttpServlet {
     private ArrayList<Class<?>> controllerClasses;
-    private boolean checked;
+    private boolean checked = false;
 
-    //Class methods
-    
+    // Class methods
+    private void initVariables() throws ClassNotFoundException, IOException {
+        String packageName = this.getInitParameter("package_name");
+        ArrayList<Class<?>> classes = ControllerUtils.getControllerClasses(packageName);
+        setControllerClasses(classes);
+        setChecked(true);
+    }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -32,7 +37,7 @@ public class FrontController extends HttpServlet {
 
             ArrayList<Class<?>> classes = getControllerClasses();
 
-            for(Class<?> clazz : classes) {
+            for (Class<?> clazz : classes) {
                 out.println("<li>" + clazz.getSimpleName() + "</li>");
             }
             out.println("</ul>");
@@ -41,7 +46,7 @@ public class FrontController extends HttpServlet {
         }
     }
 
-    //Override methods
+    // Override methods
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
@@ -55,9 +60,7 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            String packageName = this.getInitParameter("package_name");
-            ArrayList<Class<?>> classes = ControllerUtils.getControllerClasses(packageName);
-            setControllerClasses(classes);
+            initVariables();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
