@@ -3,11 +3,18 @@ package mg.emberframework.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PackageUtils {
+    public static List<Method> getClassMethods(Class<?> clazz) {
+        List<Method> methods = new ArrayList<Method>();
+
+        return methods;
+    }
+
     public static List<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
         List<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
