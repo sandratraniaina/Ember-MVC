@@ -3,6 +3,7 @@ package mg.emberframework.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -11,17 +12,21 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.annotation.Controller;
+import mg.emberframework.url.Mapping;
 
 public class FrontController extends HttpServlet {
-    private ArrayList<Class<?>> controllerClasses;
-    private boolean checked = false;
+    private HashMap<String, Mapping> urlMapping;
 
     // Class methods
     private void initVariables() throws ClassNotFoundException, IOException {
         String packageName = this.getInitParameter("package_name");
         ArrayList<Class<?>> classes = (ArrayList<Class<?>>)PackageUtils.getClassesWithAnnotation(packageName, Controller.class);
-        setControllerClasses(classes);
-        setChecked(true);
+
+        HashMap<String, Mapping> urlMappings = new HashMap<String, Mapping>();
+
+        
+
+        setUrlMapping(urlMappings);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -37,16 +42,6 @@ public class FrontController extends HttpServlet {
             out.println("Your controllers :");
             out.println("<ul>");
 
-            if (!isChecked()) {
-                initVariables();
-            }
-
-            ArrayList<Class<?>> classes = getControllerClasses();
-
-            for (Class<?> clazz : classes) {
-                out.println("<li>" + clazz.getSimpleName() + "</li>");
-            }
-            out.println("</ul>");
         } catch (Exception e) {
             out.println(e);
         }
@@ -75,19 +70,11 @@ public class FrontController extends HttpServlet {
     }
 
     // Getters and setters
-    public boolean isChecked() {
-        return checked;
+    public HashMap<String, Mapping> getUrlMapping() {
+        return urlMapping;
     }
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-
-    public ArrayList<Class<?>> getControllerClasses() {
-        return controllerClasses;
-    }
-
-    public void setControllerClasses(ArrayList<Class<?>> controllerClasses) {
-        this.controllerClasses = controllerClasses;
+    public void setUrlMapping(HashMap<String, Mapping> urlMapping) {
+        this.urlMapping = urlMapping;
     }
 }
