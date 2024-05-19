@@ -9,8 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PackageUtils {
-    public static List<Method> getClassMethods(Class<?> clazz) {
+    public static List<Method> getClassMethodsWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
         List<Method> methods = new ArrayList<Method>();
+        Method[] classMethods = clazz.getDeclaredMethods();
+
+        for (Method method : classMethods) {
+            if (method.isAnnotationPresent(annotation)) {
+                methods.add(method);
+            }
+        }
 
         return methods;
     }
