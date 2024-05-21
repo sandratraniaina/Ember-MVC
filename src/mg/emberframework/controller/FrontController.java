@@ -18,7 +18,7 @@ import mg.emberframework.annotation.Get;
 import mg.emberframework.url.Mapping;
 
 public class FrontController extends HttpServlet {
-    private HashMap<String, Mapping> urlMapping;
+    private HashMap<String, Mapping> URLMappings;
 
     // Class methods
     private void initVariables() throws ClassNotFoundException, IOException {
@@ -41,7 +41,7 @@ public class FrontController extends HttpServlet {
             }
         }
  
-        setUrlMapping(urlMappings);
+        setURLMapping(urlMappings);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -50,6 +50,17 @@ public class FrontController extends HttpServlet {
 
         try {
             out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
+
+            String url = request.getRequestURI().substring(request.getContextPath().length());
+            Mapping mapping = getURLMapping().get(url);
+            out.println("<br>" + url + "<br>");
+            if (mapping != null) {
+                out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
+                out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
+                out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
+            } else {
+                out.println("Oops, url not found");
+            }
 
         } catch (Exception e) {
             out.println(e);
@@ -79,11 +90,11 @@ public class FrontController extends HttpServlet {
     }
 
     // Getters and setters
-    public HashMap<String, Mapping> getUrlMapping() {
-        return urlMapping;
+    public HashMap<String, Mapping> getURLMapping() {
+        return URLMappings;
     }
 
-    public void setUrlMapping(HashMap<String, Mapping> urlMapping) {
-        this.urlMapping = urlMapping;
+    public void setURLMapping(HashMap<String, Mapping> urlMapping) {
+        this.URLMappings = urlMapping;
     }
 }
