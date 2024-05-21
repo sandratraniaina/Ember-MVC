@@ -2,8 +2,10 @@ package mg.emberframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.annotation.Controller;
+import mg.emberframework.annotation.Get;
 import mg.emberframework.url.Mapping;
 
 public class FrontController extends HttpServlet {
@@ -24,8 +27,20 @@ public class FrontController extends HttpServlet {
 
         HashMap<String, Mapping> urlMappings = new HashMap<String, Mapping>();
 
-        
+        for (Class<?> clazz : classes) {
+            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Get.class);
+            String className = clazz.getSimpleName();
 
+            for (Method method : classMethods) {
+                Get methodAnnotation = method.getAnnotation(Get.class);
+                String url = methodAnnotation.value();
+
+                if (url != null && !"".equals(url)) {
+                    urlMappings.put(url, new Mapping(className, method.getName()));
+                }
+            }
+        }
+ 
         setUrlMapping(urlMappings);
     }
 
@@ -35,12 +50,6 @@ public class FrontController extends HttpServlet {
 
         try {
             out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
-            out.println("<p>Looking for a web framework? You are in the right place...</p>");
-            out.println(
-                    "<p> Ember MVC is a Java-based web framework built on top of the Servlet API. It provides a lightweight alternative to Spring MVC, focusing on core functionalities. </p>");
-            out.println("<span>Your URL : <a href = \' \'> " + request.getRequestURI() + "</a></span> <br><br>");
-            out.println("Your controllers :");
-            out.println("<ul>");
 
         } catch (Exception e) {
             out.println(e);
