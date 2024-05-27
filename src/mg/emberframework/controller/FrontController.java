@@ -2,7 +2,10 @@ package mg.emberframework.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -11,17 +14,34 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.annotation.Controller;
+import mg.emberframework.annotation.Get;
+import mg.emberframework.url.Mapping;
 
 public class FrontController extends HttpServlet {
-    private ArrayList<Class<?>> controllerClasses;
-    private boolean checked = false;
+    private HashMap<String, Mapping> URLMappings;
 
     // Class methods
     private void initVariables() throws ClassNotFoundException, IOException {
         String packageName = this.getInitParameter("package_name");
         ArrayList<Class<?>> classes = (ArrayList<Class<?>>)PackageUtils.getClassesWithAnnotation(packageName, Controller.class);
-        setControllerClasses(classes);
-        setChecked(true);
+
+        HashMap<String, Mapping> urlMappings = new HashMap<String, Mapping>();
+
+        for (Class<?> clazz : classes) {
+            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Get.class);
+            String className = clazz.getSimpleName();
+
+            for (Method method : classMethods) {
+                Get methodAnnotation = method.getAnnotation(Get.class);
+                String url = methodAnnotation.value();
+
+                if (url != null && !"".equals(url)) {
+                    urlMappings.put(url, new Mapping(className, method.getName()));
+                }
+            }
+        }
+ 
+        setURLMapping(urlMappings);
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -30,23 +50,18 @@ public class FrontController extends HttpServlet {
 
         try {
             out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
-            out.println("<p>Looking for a web framework? You are in the right place...</p>");
-            out.println(
-                    "<p> Ember MVC is a Java-based web framework built on top of the Servlet API. It provides a lightweight alternative to Spring MVC, focusing on core functionalities. </p>");
-            out.println("<span>Your URL : <a href = \' \'> " + request.getRequestURI() + "</a></span> <br><br>");
-            out.println("Your controllers :");
-            out.println("<ul>");
 
-            if (!isChecked()) {
-                initVariables();
+            String url = request.getRequestURI().substring(request.getContextPath().length());
+            Mapping mapping = getURLMapping().get(url);
+            out.println("<br>" + url + "<br>");
+            if (mapping != null) {
+                out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
+                out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
+                out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
+            } else {
+                out.println("Oops, url not found");
             }
 
-            ArrayList<Class<?>> classes = getControllerClasses();
-
-            for (Class<?> clazz : classes) {
-                out.println("<li>" + clazz.getSimpleName() + "</li>");
-            }
-            out.println("</ul>");
         } catch (Exception e) {
             out.println(e);
         }
@@ -75,19 +90,11 @@ public class FrontController extends HttpServlet {
     }
 
     // Getters and setters
-    public boolean isChecked() {
-        return checked;
+    public HashMap<String, Mapping> getURLMapping() {
+        return URLMappings;
     }
 
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-
-    public ArrayList<Class<?>> getControllerClasses() {
-        return controllerClasses;
-    }
-
-    public void setControllerClasses(ArrayList<Class<?>> controllerClasses) {
-        this.controllerClasses = controllerClasses;
+    public void setURLMapping(HashMap<String, Mapping> urlMapping) {
+        this.URLMappings = urlMapping;
     }
 }

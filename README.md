@@ -32,9 +32,7 @@ The script will create a JAR file named **ember_mvc.jar**. Add the file to your 
 
 ## Feature
 
-* The lastest feature display all declared **Controller** within your web application.
-  * To declare a class as a controller, add **@Controller**(mg.emberframework.annotation.Controller) annotation in the class
-* The file **FrontController.java** welcome user to **Ember_MVC**, capture user request URL and display it in the page.
+* It actually display controller and method which matches with the current url and tell the user url not found if no method matches with the url.
 
 ## Contributing
 
