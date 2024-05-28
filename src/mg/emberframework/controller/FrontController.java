@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.Get;
+import mg.emberframework.manager.MainProcess;
 import mg.emberframework.url.Mapping;
 
 public class FrontController extends HttpServlet {
@@ -46,32 +47,7 @@ public class FrontController extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-
-        try {
-            out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
-
-            String url = request.getRequestURI().substring(request.getContextPath().length());
-            Mapping mapping = getURLMapping().get(url);
-            out.println("<br>" + url + "<br>");
-            if (mapping != null) {
-                out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
-                out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
-                out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
-
-                Class<?> clazz = Class.forName(mapping.getClassName());
-                Object object = clazz.getConstructor().newInstance();
-                Method method = clazz.getMethod(mapping.getMethodName());
-
-                String result = method.invoke(object).toString();
-                out.println("<p>Result after executing the method: <strong>" + result + "</strong></p>");
-            } else {
-                out.println("Oops, url not found");
-            }
-
-        } catch (Exception e) {
-            out.println(e);
-        }
+        MainProcess.handleRequest(request, response);
     }
 
     // Override methods
@@ -88,7 +64,7 @@ public class FrontController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         try {
-            initVariables();
+            MainProcess.init(this);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
