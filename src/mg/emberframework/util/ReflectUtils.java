@@ -21,4 +21,13 @@ public class ReflectUtils {
         Method method = object.getClass().getMethod(methodName, getArgsClasses(args));
         return method.invoke(object, args);
     }
+
+    public static Object executeClassMethod(Class<?> clazz, String methodName, Object... args)
+            throws NoSuchMethodException,
+            SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            InstantiationException {
+        Class<?>[] arguments = getArgsClasses(args);
+        Object object = clazz.getConstructor().newInstance((Object[]) arguments);
+        return executeMethod(object, methodName, args);
+    }
 }
