@@ -6,7 +6,7 @@ public class TagBuilder {
     }
 
     public static String bold(String text) {
-        return "<strong>" + text + "</strong>";
+        return enclose("strong", text);
     }
     
 }
