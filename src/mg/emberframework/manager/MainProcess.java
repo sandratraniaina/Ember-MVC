@@ -1,6 +1,7 @@
 package mg.emberframework.manager;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +18,33 @@ import mg.emberframework.util.PackageUtils;
 public class MainProcess {
     static FrontController frontController;
 
-    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) {
-        
+    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+
+        try {
+            out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
+
+            String url = request.getRequestURI().substring(request.getContextPath().length());
+            Mapping mapping = frontController.getURLMapping().get(url);
+            out.println("<br>" + url + "<br>");
+            if (mapping != null) {
+                out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
+                out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
+                out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
+
+                Class<?> clazz = Class.forName(mapping.getClassName());
+                Object object = clazz.getConstructor().newInstance();
+                Method method = clazz.getMethod(mapping.getMethodName());
+
+                String result = method.invoke(object).toString();
+                out.println("<p>Result after executing the method: <strong>" + result + "</strong></p>");
+            } else {
+                out.println("Oops, url not found");
+            }
+
+        } catch (Exception e) {
+            out.println(e);
+        }
     }
 
     public static void init() throws ClassNotFoundException, IOException {
