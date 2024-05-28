@@ -47,8 +47,8 @@ public class MainProcess {
         }
     }
 
-    public static void init() throws ClassNotFoundException, IOException {
-        frontController = new FrontController();
+    public static void init(FrontController controller) throws ClassNotFoundException, IOException {
+        frontController = controller;
 
         String packageName = frontController.getInitParameter("package_name");
         ArrayList<Class<?>> classes = (ArrayList<Class<?>>) PackageUtils.getClassesWithAnnotation(packageName,
