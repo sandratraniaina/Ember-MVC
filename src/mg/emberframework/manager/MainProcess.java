@@ -14,6 +14,7 @@ import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
 import mg.emberframework.url.Mapping;
 import mg.emberframework.util.PackageUtils;
+import mg.emberframework.util.ReflectUtils;
 
 public class MainProcess {
     static FrontController frontController;
@@ -33,10 +34,9 @@ public class MainProcess {
                 out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
 
                 Class<?> clazz = Class.forName(mapping.getClassName());
-                Object object = clazz.getConstructor().newInstance();
-                Method method = clazz.getMethod(mapping.getMethodName());
 
-                String result = method.invoke(object).toString();
+                String result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName()).toString();
+
                 out.println("<p>Result after executing the method: <strong>" + result + "</strong></p>");
             } else {
                 out.println("Oops, url not found");
