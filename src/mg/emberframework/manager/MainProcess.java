@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
@@ -14,6 +16,10 @@ import mg.emberframework.util.PackageUtils;
 
 public class MainProcess {
     static FrontController frontController;
+
+    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) {
+        
+    }
 
     public static void init() throws ClassNotFoundException, IOException {
         frontController = new FrontController();
