@@ -27,7 +27,9 @@ public class MainProcess {
 
             String url = request.getRequestURI().substring(request.getContextPath().length());
             Mapping mapping = frontController.getURLMapping().get(url);
+
             out.println("<br>" + url + "<br>");
+            
             if (mapping != null) {
                 out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
                 out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
