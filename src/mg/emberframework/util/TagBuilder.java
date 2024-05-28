@@ -8,5 +8,10 @@ public class TagBuilder {
     public static String bold(String text) {
         return enclose("strong", text);
     }
+
+    public static String heading(String text, int level) {
+        String tag = "h" + level;
+        return enclose(tag, text);
+    }
     
 }
