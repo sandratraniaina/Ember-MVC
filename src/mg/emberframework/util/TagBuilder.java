@@ -9,7 +9,10 @@ public class TagBuilder {
         return enclose(text, "strong");
     }
 
-    public static String heading(String text, int level) {
+    public static String heading(String text, int level) throws Exception {
+        if (level < 0 || level > 6) {
+            throw new Exception("Invalid heading level");
+        }
         String tag = "h" + level;
         return enclose(text, tag);
     }
