@@ -5,6 +5,10 @@ public class TagBuilder {
         return "<" + tag + ">" + text + "</" + tag + ">";
     }
 
+    public static String unclosedTag(String tag) {
+        return "<" + tag + ">";
+    }
+
     public static String bold(String text) {
         return enclose(text, "strong");
     }
