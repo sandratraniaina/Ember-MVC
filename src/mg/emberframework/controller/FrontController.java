@@ -29,7 +29,7 @@ public class FrontController extends HttpServlet {
 
         for (Class<?> clazz : classes) {
             List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Get.class);
-            String className = clazz.getSimpleName();
+            String className = clazz.getName();
 
             for (Method method : classMethods) {
                 Get methodAnnotation = method.getAnnotation(Get.class);
@@ -58,6 +58,13 @@ public class FrontController extends HttpServlet {
                 out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
                 out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
                 out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
+
+                Class<?> clazz = Class.forName(mapping.getClassName());
+                Object object = clazz.getConstructor().newInstance();
+                Method method = clazz.getMethod(mapping.getMethodName());
+
+                String result = method.invoke(object).toString();
+                out.println("<p>Result after executing the method: <strong>" + result + "</strong></p>");
             } else {
                 out.println("Oops, url not found");
             }
