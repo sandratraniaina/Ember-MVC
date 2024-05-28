@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
-import mg.emberframework.url.Mapping;
+import mg.emberframework.manager.url.Mapping;
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.util.ReflectUtils;
 

@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import mg.emberframework.manager.MainProcess;
-import mg.emberframework.url.Mapping;
+import mg.emberframework.manager.url.Mapping;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> URLMappings;
