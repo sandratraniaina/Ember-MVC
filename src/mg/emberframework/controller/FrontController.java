@@ -17,7 +17,11 @@ public class FrontController extends HttpServlet {
     // Class methods
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        MainProcess.handleRequest(request, response);
+        try {
+            MainProcess.handleRequest(request, response);
+        } catch (Exception e) {
+            e.printStackTrace(response.getWriter());
+        }
     }
 
     // Override methods

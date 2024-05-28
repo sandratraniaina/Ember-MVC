@@ -15,38 +15,49 @@ import mg.emberframework.controller.FrontController;
 import mg.emberframework.manager.url.Mapping;
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.util.ReflectUtils;
+import mg.emberframework.util.TagBuilder;
 
 public class MainProcess {
     static FrontController frontController;
 
-    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         PrintWriter out = response.getWriter();
 
+        String title = TagBuilder.heading("Welcome to Ember-MVC", 1);
+        title += TagBuilder.unclosedTag("hr");
+        
+        String message = "";
+
         try {
-            out.println("<h1>Welcome to Ember-MVC</h1> <hr>");
 
             String url = request.getRequestURI().substring(request.getContextPath().length());
             Mapping mapping = frontController.getURLMapping().get(url);
 
-            out.println("<br>" + url + "<br>");
+            message += TagBuilder.enclose("URL: " +  TagBuilder.bold(url), "br");
             
             if (mapping != null) {
-                out.println("<br> Current url (<strong>" + url + "</strong>) matches with the following mapping: <br>");
-                out.println("<br> Classname : <strong>" + mapping.getClassName() + "</strong><br> ");
-                out.println("<br> Methodname : <strong>" + mapping.getMethodName() + "</strong><br> ");
+                message += TagBuilder.paragraph("Current url matches with the following mapping : ");
 
                 Class<?> clazz = Class.forName(mapping.getClassName());
-
                 String result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName()).toString();
 
-                out.println("<p>Result after executing the method: <strong>" + result + "</strong></p>");
+                String info = "";
+
+                info += TagBuilder.enclose("Classname : " + TagBuilder.bold(mapping.getClassName()), "li");
+                info += TagBuilder.enclose("MethodName : " + TagBuilder.bold(mapping.getMethodName()), "li");
+                info += TagBuilder.enclose("Method execution result: " + TagBuilder.bold(result), "li");
+
+                message += TagBuilder.enclose(info, "ul");
             } else {
-                out.println("Oops, url not found");
+                message = TagBuilder.bold("Oops, url not found");
             }
 
         } catch (Exception e) {
-            out.println(e);
+            message += TagBuilder.bold(e.getMessage());
         }
+
+        out.println(title);
+        out.println(message);
     }
 
     public static void init(FrontController controller) throws ClassNotFoundException, IOException {
