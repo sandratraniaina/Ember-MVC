@@ -26,15 +26,13 @@ The repository contains a batch script file to build the project. Run the follow
 
 The script will create a JAR file named **ember_mvc.jar**. Add the file to your project's libraries and it will be ready to use for your web application. 
 
-**Note:** Do not forget to add FrontController inside your **web.xml** file with your controller package as a value.
-
 **Note:** Do not forget to add FrontController inside your **web.xml** file with your controller package as a `init_param` value.
 
 ## Feature
 
-* The lastest feature display all declared **Controller** within your web application.
-  * To declare a class as a controller, add **@Controller**(mg.emberframework.annotation.Controller) annotation in the class
-* The file **FrontController.java** welcome user to **Ember_MVC**, capture user request URL and display it in the page.
+* The lastest feature execute associated method for user requested URL. 
+
+**Note:** Method should only return a string for now
 
 ## Contributing
 
