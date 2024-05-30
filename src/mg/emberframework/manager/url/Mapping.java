@@ -1,4 +1,4 @@
-package mg.emberframework.url;
+package mg.emberframework.manager.url;
 
 public class Mapping {
     String className, methodName;

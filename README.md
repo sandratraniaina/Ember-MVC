@@ -26,13 +26,13 @@ The repository contains a batch script file to build the project. Run the follow
 
 The script will create a JAR file named **ember_mvc.jar**. Add the file to your project's libraries and it will be ready to use for your web application. 
 
-**Note:** Do not forget to add FrontController inside your **web.xml** file with your controller package as a value.
-
 **Note:** Do not forget to add FrontController inside your **web.xml** file with your controller package as a `init_param` value.
 
 ## Feature
 
-* It actually display controller and method which matches with the current url and tell the user url not found if no method matches with the url.
+* The lastest feature execute associated method for user requested URL. 
+
+**Note:** Method should only return a string for now
 
 ## Contributing
 
