@@ -6,6 +6,11 @@ public class ModelView {
     String url;
     HashMap<String, Object> data;
 
+    // Class method
+    public void addObject(String attribute, Object object) {
+        getData().put(attribute, object);
+    }
+
     // Constructor
     public ModelView() {
     }
