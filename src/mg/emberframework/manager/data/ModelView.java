@@ -8,6 +8,10 @@ public class ModelView {
 
     // Class method
     public void addObject(String attribute, Object object) {
+        if (getData() == null) {
+            setData(new HashMap<String, Object>());
+        }
+        
         getData().put(attribute, object);
     }
 
