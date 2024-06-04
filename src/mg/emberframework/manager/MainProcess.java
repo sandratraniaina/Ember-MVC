@@ -12,10 +12,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
+import mg.emberframework.manager.data.ModelView;
+import mg.emberframework.manager.exception.IllegalReturnTypeException;
+import mg.emberframework.manager.exception.UrlNotFoundException;
 import mg.emberframework.manager.url.Mapping;
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.util.ReflectUtils;
-import mg.emberframework.util.TagBuilder;
 
 public class MainProcess {
     static FrontController frontController;
@@ -23,41 +25,38 @@ public class MainProcess {
     public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         PrintWriter out = response.getWriter();
 
-        String title = TagBuilder.heading("Welcome to Ember-MVC", 1);
-        title += TagBuilder.unclosedTag("hr");
-        
-        String message = "";
-
         try {
 
             String url = request.getRequestURI().substring(request.getContextPath().length());
             Mapping mapping = frontController.getURLMapping().get(url);
 
-            message += TagBuilder.enclose("URL: " +  TagBuilder.bold(url), "br");
-            
-            if (mapping != null) {
-                message += TagBuilder.paragraph("Current url matches with the following mapping : ");
-
-                Class<?> clazz = Class.forName(mapping.getClassName());
-                String result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName()).toString();
-
-                String info = "";
-
-                info += TagBuilder.enclose("Classname : " + TagBuilder.bold(mapping.getClassName()), "li");
-                info += TagBuilder.enclose("MethodName : " + TagBuilder.bold(mapping.getMethodName()), "li");
-                info += TagBuilder.enclose("Method execution result: " + TagBuilder.bold(result), "li");
-
-                message += TagBuilder.enclose(info, "ul");
-            } else {
-                message = TagBuilder.bold("Oops, url not found");
+            if (mapping == null) {
+                throw new UrlNotFoundException("Oops, url not found!");
             }
 
-        } catch (Exception e) {
-            message += TagBuilder.bold(e.getMessage());
-        }
+            Class<?> clazz = Class.forName(mapping.getClassName());
+            Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
+            
+            if (result instanceof String) {
+                out.println(result.toString());
+            } else if (result instanceof ModelView) {
+                ModelView modelView = ((ModelView)result);
+                HashMap<String, Object> data = modelView.getData();
 
-        out.println(title);
-        out.println(message);
+                for (String key : data.keySet()) {
+                    request.setAttribute(key, data.get(key));
+                }
+
+                request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
+            } else {
+                throw new IllegalReturnTypeException("Invalid return type");
+            }
+
+        } catch (UrlNotFoundException | IllegalReturnTypeException e ) {
+            out.println(e);
+        } catch (Exception e) {
+            e.printStackTrace(out);
+        }
     }
 
     public static void init(FrontController controller) throws ClassNotFoundException, IOException {
