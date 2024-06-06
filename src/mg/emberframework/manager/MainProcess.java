@@ -2,11 +2,13 @@ package mg.emberframework.manager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.annotation.Controller;
@@ -17,6 +19,7 @@ import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.exception.UrlNotFoundException;
+import mg.emberframework.manager.handler.ExceptionHandler;
 import mg.emberframework.manager.url.Mapping;
 import mg.emberframework.util.PackageScanner;
 import mg.emberframework.util.PackageUtils;
@@ -26,40 +29,38 @@ public class MainProcess {
     static FrontController frontController;
     private List<Exception> exceptions;
 
-    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public static void handleRequest(FrontController controller, HttpServletRequest request,
+            HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
         PrintWriter out = response.getWriter();
 
-        try {
+        if (!controller.getExceptions().isEmpty()) {
+            ExceptionHandler.handleExceptions(controller.getExceptions(), response);
+            return;
+        }
 
-            String url = request.getRequestURI().substring(request.getContextPath().length());
-            Mapping mapping = frontController.getURLMapping().get(url);
+        String url = request.getRequestURI().substring(request.getContextPath().length());
+        Mapping mapping = frontController.getURLMapping().get(url);
 
-            if (mapping == null) {
-                throw new UrlNotFoundException("Oops, url not found!");
+        if (mapping == null) {
+            throw new UrlNotFoundException("Oops, url not found!");
+        }
+
+        Class<?> clazz = Class.forName(mapping.getClassName());
+        Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
+
+        if (result instanceof String) {
+            out.println(result.toString());
+        } else if (result instanceof ModelView) {
+            ModelView modelView = ((ModelView) result);
+            HashMap<String, Object> data = modelView.getData();
+
+            for (String key : data.keySet()) {
+                request.setAttribute(key, data.get(key));
             }
 
-            Class<?> clazz = Class.forName(mapping.getClassName());
-            Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
-
-            if (result instanceof String) {
-                out.println(result.toString());
-            } else if (result instanceof ModelView) {
-                ModelView modelView = ((ModelView) result);
-                HashMap<String, Object> data = modelView.getData();
-
-                for (String key : data.keySet()) {
-                    request.setAttribute(key, data.get(key));
-                }
-
-                request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
-            } else {
-                throw new IllegalReturnTypeException("Invalid return type");
-            }
-
-        } catch (UrlNotFoundException | IllegalReturnTypeException e) {
-            out.println(e);
-        } catch (Exception e) {
-            e.printStackTrace(out);
+            request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
+        } else {
+            throw new IllegalReturnTypeException("Invalid return type");
         }
     }
 

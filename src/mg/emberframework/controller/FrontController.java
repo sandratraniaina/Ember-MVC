@@ -20,7 +20,7 @@ public class FrontController extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            MainProcess.handleRequest(request, response);
+            MainProcess.handleRequest(this, request, response);
         } catch (Exception e) {
             e.printStackTrace(response.getWriter());
         }
