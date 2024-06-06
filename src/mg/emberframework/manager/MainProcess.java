@@ -62,10 +62,11 @@ public class MainProcess {
     }
 
     public static void init(FrontController controller) throws ClassNotFoundException, IOException, InvalidControllerPackageException, DuplicateUrlException {
+        frontController = controller;
 
         String packageName = controller.getInitParameter("package_name");
 
-        if (packageName == null) {
+        if (packageName == null || packageName.isBlank()) {
             throw new InvalidControllerPackageException("Controller package provider cannot be null");
         }
 

@@ -27,7 +27,7 @@ public class PackageScanner {
                 String url = methodAnnotation.value();
 
                 if (result.containsKey(url)) {
-                    throw new DuplicateUrlException("Duplicated url " + url);
+                    throw new DuplicateUrlException("Duplicated url \"" + url + "\"");
                 }
 
                 if (url != null && !"".equals(url)) {

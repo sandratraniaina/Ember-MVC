@@ -1,6 +1,7 @@
 package mg.emberframework.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import mg.emberframework.manager.url.Mapping;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> URLMappings;
-    private List<Exception> exceptions;
+    private List<Exception> exceptions = new ArrayList<>();
 
     // Class methods
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
