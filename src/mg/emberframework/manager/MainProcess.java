@@ -76,10 +76,11 @@ public class MainProcess {
             urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);
 
             controller.setURLMapping(urlMappings);
-        } catch (ClassNotFoundException | IOException | DuplicateUrlException e) {
-            e.printStackTrace();
-        } catch (InvalidControllerPackageException e) {
-            e.printStackTrace();
+        } catch (InvalidControllerPackageException | DuplicateUrlException e) {
+            controller.getExceptions().add(e);
+        } catch (Exception e) {
+            controller.getExceptions()
+                    .add(new Exception("Error during initialization : " + e.getMessage(), e.getCause()));
         }
 
     }
