@@ -21,6 +21,7 @@ import mg.emberframework.util.ReflectUtils;
 
 public class MainProcess {
     static FrontController frontController;
+    private List<Exception> exceptions;
 
     public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         PrintWriter out = response.getWriter();
@@ -83,5 +84,14 @@ public class MainProcess {
         }
 
         frontController.setURLMapping(urlMappings);
+    }
+
+    // Getters and setters
+    public List<Exception> getExceptions() {
+        return exceptions;
+    }
+
+    public void setExceptions(List<Exception> exceptions) {
+        this.exceptions = exceptions;
     }
 }
