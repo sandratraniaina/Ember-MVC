@@ -30,7 +30,9 @@ public class MainProcess {
     private List<Exception> exceptions;
 
     public static void handleRequest(FrontController controller, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
+            HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
+            NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
         PrintWriter out = response.getWriter();
 
         if (!controller.getExceptions().isEmpty()) {
@@ -64,26 +66,18 @@ public class MainProcess {
         }
     }
 
-    public static void init(FrontController controller) throws ClassNotFoundException, IOException {
+    public static void init(FrontController controller) throws ClassNotFoundException, IOException, InvalidControllerPackageException, DuplicateUrlException {
 
-        try {
-            String packageName = controller.getInitParameter("package_name");
+        String packageName = controller.getInitParameter("package_name");
 
-            if (packageName == null) {
-                throw new InvalidControllerPackageException("Controller package provider cannot be null");
-            }
-
-            HashMap<String, Mapping> urlMappings;
-            urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);
-
-            controller.setURLMapping(urlMappings);
-        } catch (InvalidControllerPackageException | DuplicateUrlException e) {
-            controller.getExceptions().add(e);
-        } catch (Exception e) {
-            controller.getExceptions()
-                    .add(new Exception("Error during initialization : " + e.getMessage(), e.getCause()));
+        if (packageName == null) {
+            throw new InvalidControllerPackageException("Controller package provider cannot be null");
         }
 
+        HashMap<String, Mapping> urlMappings;
+        urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);
+
+        controller.setURLMapping(urlMappings);
     }
 
     // Getters and setters
