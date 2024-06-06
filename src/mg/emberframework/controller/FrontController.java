@@ -2,6 +2,7 @@ package mg.emberframework.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +14,7 @@ import mg.emberframework.manager.url.Mapping;
 
 public class FrontController extends HttpServlet {
     private HashMap<String, Mapping> URLMappings;
+    private List<Exception> exceptions;
 
     // Class methods
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -53,5 +55,13 @@ public class FrontController extends HttpServlet {
 
     public void setURLMapping(HashMap<String, Mapping> urlMapping) {
         this.URLMappings = urlMapping;
+    }
+    
+    public List<Exception> getExceptions() {
+        return exceptions;
+    }
+
+    public void setExceptions(List<Exception> exceptions) {
+        this.exceptions = exceptions;
     }
 }
