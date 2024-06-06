@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import mg.emberframework.manager.MainProcess;
+import mg.emberframework.manager.exception.DuplicateUrlException;
+import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.url.Mapping;
 
 public class FrontController extends HttpServlet {
@@ -41,10 +43,10 @@ public class FrontController extends HttpServlet {
     public void init() throws ServletException {
         try {
             MainProcess.init(this);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (InvalidControllerPackageException | DuplicateUrlException e) {
+            getExceptions().add(e);
+        } catch (Exception e) {
+            getExceptions().add(new Exception(e.getMessage(), e.getCause()));
         }
     }
 
