@@ -1,6 +1,7 @@
 package mg.emberframework.manager.handler;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +22,12 @@ public class ExceptionHandler {
             }
         } catch (IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage());
+        }
+    }
+
+    public static void handleExceptions(List<Exception> exceptions, HttpServletResponse response) {
+        for (Exception e : exceptions) {
+            handleException(e, response);
         }
     }
 }
