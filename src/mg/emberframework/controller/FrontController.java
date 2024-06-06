@@ -1,6 +1,7 @@
 package mg.emberframework.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import mg.emberframework.manager.MainProcess;
 import mg.emberframework.manager.exception.DuplicateUrlException;
+import mg.emberframework.manager.exception.IllegalReturnTypeException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
+import mg.emberframework.manager.exception.UrlNotFoundException;
+import mg.emberframework.manager.handler.ExceptionHandler;
 import mg.emberframework.manager.url.Mapping;
 
 public class FrontController extends HttpServlet {
@@ -23,8 +27,10 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
         try {
             MainProcess.handleRequest(this, request, response);
+        } catch (UrlNotFoundException |  IllegalReturnTypeException e) {
+            ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
-            e.printStackTrace(response.getWriter());
+            ExceptionHandler.handleException(new Exception("An error has occured while processing your request : " + e.getMessage()), response);
         }
     }
 
@@ -58,7 +64,7 @@ public class FrontController extends HttpServlet {
     public void setURLMapping(HashMap<String, Mapping> urlMapping) {
         this.URLMappings = urlMapping;
     }
-    
+
     public List<Exception> getExceptions() {
         return exceptions;
     }
