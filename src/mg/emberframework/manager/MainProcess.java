@@ -13,9 +13,12 @@ import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
 import mg.emberframework.manager.data.ModelView;
+import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
+import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.exception.UrlNotFoundException;
 import mg.emberframework.manager.url.Mapping;
+import mg.emberframework.util.PackageScanner;
 import mg.emberframework.util.PackageUtils;
 import mg.emberframework.util.ReflectUtils;
 
@@ -37,11 +40,11 @@ public class MainProcess {
 
             Class<?> clazz = Class.forName(mapping.getClassName());
             Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
-            
+
             if (result instanceof String) {
                 out.println(result.toString());
             } else if (result instanceof ModelView) {
-                ModelView modelView = ((ModelView)result);
+                ModelView modelView = ((ModelView) result);
                 HashMap<String, Object> data = modelView.getData();
 
                 for (String key : data.keySet()) {
@@ -53,7 +56,7 @@ public class MainProcess {
                 throw new IllegalReturnTypeException("Invalid return type");
             }
 
-        } catch (UrlNotFoundException | IllegalReturnTypeException e ) {
+        } catch (UrlNotFoundException | IllegalReturnTypeException e) {
             out.println(e);
         } catch (Exception e) {
             e.printStackTrace(out);
@@ -61,29 +64,24 @@ public class MainProcess {
     }
 
     public static void init(FrontController controller) throws ClassNotFoundException, IOException {
-        frontController = controller;
 
-        String packageName = frontController.getInitParameter("package_name");
-        ArrayList<Class<?>> classes = (ArrayList<Class<?>>) PackageUtils.getClassesWithAnnotation(packageName,
-                Controller.class);
+        try {
+            String packageName = controller.getInitParameter("package_name");
 
-        HashMap<String, Mapping> urlMappings = new HashMap<String, Mapping>();
-
-        for (Class<?> clazz : classes) {
-            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Get.class);
-            String className = clazz.getName();
-
-            for (Method method : classMethods) {
-                Get methodAnnotation = method.getAnnotation(Get.class);
-                String url = methodAnnotation.value();
-
-                if (url != null && !"".equals(url)) {
-                    urlMappings.put(url, new Mapping(className, method.getName()));
-                }
+            if (packageName == null) {
+                throw new InvalidControllerPackageException("Controller package provider cannot be null");
             }
+
+            HashMap<String, Mapping> urlMappings;
+            urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);
+
+            controller.setURLMapping(urlMappings);
+        } catch (ClassNotFoundException | IOException | DuplicateUrlException e) {
+            e.printStackTrace();
+        } catch (InvalidControllerPackageException e) {
+            e.printStackTrace();
         }
 
-        frontController.setURLMapping(urlMappings);
     }
 
     // Getters and setters
