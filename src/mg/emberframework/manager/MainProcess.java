@@ -61,14 +61,10 @@ public class MainProcess {
         }
     }
 
-    public static void init(FrontController controller) throws ClassNotFoundException, IOException, InvalidControllerPackageException, DuplicateUrlException {
+    public static void init(FrontController controller) throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerPackageException {
         frontController = controller;
 
         String packageName = controller.getInitParameter("package_name");
-
-        if (packageName == null || packageName.isBlank()) {
-            throw new InvalidControllerPackageException("Controller package provider cannot be null");
-        }
 
         HashMap<String, Mapping> urlMappings;
         urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);
