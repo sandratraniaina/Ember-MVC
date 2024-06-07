@@ -2,86 +2,84 @@ package mg.emberframework.manager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.emberframework.annotation.Controller;
-import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
 import mg.emberframework.manager.data.ModelView;
+import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
+import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.exception.UrlNotFoundException;
+import mg.emberframework.manager.handler.ExceptionHandler;
 import mg.emberframework.manager.url.Mapping;
-import mg.emberframework.util.PackageUtils;
+import mg.emberframework.util.PackageScanner;
 import mg.emberframework.util.ReflectUtils;
 
 public class MainProcess {
     static FrontController frontController;
+    private List<Exception> exceptions;
 
-    public static void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public static void handleRequest(FrontController controller, HttpServletRequest request,
+            HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
+            NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
         PrintWriter out = response.getWriter();
 
-        try {
+        if (controller.getException() != null) {
+            ExceptionHandler.handleException(controller.getException(), response);
+            return;
+        }
 
-            String url = request.getRequestURI().substring(request.getContextPath().length());
-            Mapping mapping = frontController.getURLMapping().get(url);
+        String url = request.getRequestURI().substring(request.getContextPath().length());
+        Mapping mapping = frontController.getURLMapping().get(url);
 
-            if (mapping == null) {
-                throw new UrlNotFoundException("Oops, url not found!");
+        if (mapping == null) {
+            throw new UrlNotFoundException("Oops, url not found!");
+        }
+
+        Class<?> clazz = Class.forName(mapping.getClassName());
+        Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
+
+        if (result instanceof String) {
+            out.println(result.toString());
+        } else if (result instanceof ModelView) {
+            ModelView modelView = ((ModelView) result);
+            HashMap<String, Object> data = modelView.getData();
+
+            for (Entry<String, Object> entry : data.entrySet()) {
+                request.setAttribute(entry.getKey(), entry.getValue());
             }
 
-            Class<?> clazz = Class.forName(mapping.getClassName());
-            Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
-            
-            if (result instanceof String) {
-                out.println(result.toString());
-            } else if (result instanceof ModelView) {
-                ModelView modelView = ((ModelView)result);
-                HashMap<String, Object> data = modelView.getData();
-
-                for (String key : data.keySet()) {
-                    request.setAttribute(key, data.get(key));
-                }
-
-                request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
-            } else {
-                throw new IllegalReturnTypeException("Invalid return type");
-            }
-
-        } catch (UrlNotFoundException | IllegalReturnTypeException e ) {
-            out.println(e);
-        } catch (Exception e) {
-            e.printStackTrace(out);
+            request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
+        } else {
+            throw new IllegalReturnTypeException("Invalid return type");
         }
     }
 
-    public static void init(FrontController controller) throws ClassNotFoundException, IOException {
+    public static void init(FrontController controller)
+            throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerPackageException {
         frontController = controller;
 
-        String packageName = frontController.getInitParameter("package_name");
-        ArrayList<Class<?>> classes = (ArrayList<Class<?>>) PackageUtils.getClassesWithAnnotation(packageName,
-                Controller.class);
+        String packageName = controller.getInitParameter("package_name");
 
-        HashMap<String, Mapping> urlMappings = new HashMap<String, Mapping>();
+        HashMap<String, Mapping> urlMappings;
+        urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);
 
-        for (Class<?> clazz : classes) {
-            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Get.class);
-            String className = clazz.getName();
+        controller.setURLMapping(urlMappings);
+    }
 
-            for (Method method : classMethods) {
-                Get methodAnnotation = method.getAnnotation(Get.class);
-                String url = methodAnnotation.value();
+    // Getters and setters
+    public List<Exception> getExceptions() {
+        return exceptions;
+    }
 
-                if (url != null && !"".equals(url)) {
-                    urlMappings.put(url, new Mapping(className, method.getName()));
-                }
-            }
-        }
-
-        frontController.setURLMapping(urlMappings);
+    public void setExceptions(List<Exception> exceptions) {
+        this.exceptions = exceptions;
     }
 }

@@ -30,9 +30,12 @@ The script will create a JAR file named **ember_mvc.jar**. Add the file to your 
 
 ## Feature
 
-* The lastest feature execute associated method for user requested URL. 
+* The lastest feature execute associated method for user requested URL.  
+* It checks if the method return the allowed the allowed return types* and throw an exception otherwise
+* It checks if there is duplicated url on your project and throw exception accordignly
+* It checks if controller package is null or empty
 
-**Note:** Method should only return a string for now
+**Note:** Allowed return type : String and ModelView
 
 ## Contributing
 
