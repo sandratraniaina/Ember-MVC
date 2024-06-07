@@ -3,16 +3,13 @@ package mg.emberframework.manager;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mg.emberframework.annotation.Controller;
-import mg.emberframework.annotation.Get;
 import mg.emberframework.controller.FrontController;
 import mg.emberframework.manager.data.ModelView;
 import mg.emberframework.manager.exception.DuplicateUrlException;
@@ -22,7 +19,6 @@ import mg.emberframework.manager.exception.UrlNotFoundException;
 import mg.emberframework.manager.handler.ExceptionHandler;
 import mg.emberframework.manager.url.Mapping;
 import mg.emberframework.util.PackageScanner;
-import mg.emberframework.util.PackageUtils;
 import mg.emberframework.util.ReflectUtils;
 
 public class MainProcess {
@@ -35,8 +31,8 @@ public class MainProcess {
             InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
         PrintWriter out = response.getWriter();
 
-        if (!controller.getExceptions().isEmpty()) {
-            ExceptionHandler.handleExceptions(controller.getExceptions(), response);
+        if (controller.getException() != null) {
+            ExceptionHandler.handleException(controller.getException(), response);
             return;
         }
 
@@ -56,8 +52,8 @@ public class MainProcess {
             ModelView modelView = ((ModelView) result);
             HashMap<String, Object> data = modelView.getData();
 
-            for (String key : data.keySet()) {
-                request.setAttribute(key, data.get(key));
+            for (Entry<String, Object> entry : data.entrySet()) {
+                request.setAttribute(entry.getKey(), entry.getValue());
             }
 
             request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
@@ -66,13 +62,11 @@ public class MainProcess {
         }
     }
 
-    public static void init(FrontController controller) throws ClassNotFoundException, IOException, InvalidControllerPackageException, DuplicateUrlException {
+    public static void init(FrontController controller)
+            throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerPackageException {
+        frontController = controller;
 
         String packageName = controller.getInitParameter("package_name");
-
-        if (packageName == null) {
-            throw new InvalidControllerPackageException("Controller package provider cannot be null");
-        }
 
         HashMap<String, Mapping> urlMappings;
         urlMappings = (HashMap<String, Mapping>) PackageScanner.scanPackage(packageName);

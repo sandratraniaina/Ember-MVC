@@ -10,10 +10,16 @@ import java.util.Map;
 import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.Get;
 import mg.emberframework.manager.exception.DuplicateUrlException;
+import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.url.Mapping;
 
 public class PackageScanner {
-    public static Map<String, Mapping> scanPackage(String packageName) throws ClassNotFoundException, IOException, DuplicateUrlException {
+    public static Map<String, Mapping> scanPackage(String packageName)
+            throws ClassNotFoundException, IOException, DuplicateUrlException,InvalidControllerPackageException {
+        if (packageName == null || packageName.isBlank()) {
+            throw new InvalidControllerPackageException("Controller package provider cannot be null");
+        }
+
         Map<String, Mapping> result = new HashMap<>();
 
         ArrayList<Class<?>> classes = (ArrayList<Class<?>>) PackageUtils.getClassesWithAnnotation(packageName,
@@ -27,7 +33,7 @@ public class PackageScanner {
                 String url = methodAnnotation.value();
 
                 if (result.containsKey(url)) {
-                    throw new DuplicateUrlException("Duplicated url " + url);
+                    throw new DuplicateUrlException("Duplicated url \"" + url + "\"");
                 }
 
                 if (url != null && !"".equals(url)) {
