@@ -31,8 +31,8 @@ public class MainProcess {
             InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
         PrintWriter out = response.getWriter();
 
-        if (!controller.getExceptions().isEmpty()) {
-            ExceptionHandler.handleExceptions(controller.getExceptions(), response);
+        if (controller.getException() != null) {
+            ExceptionHandler.handleException(controller.getException(), response);
             return;
         }
 
