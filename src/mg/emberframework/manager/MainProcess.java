@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,8 +52,8 @@ public class MainProcess {
             ModelView modelView = ((ModelView) result);
             HashMap<String, Object> data = modelView.getData();
 
-            for (String key : data.keySet()) {
-                request.setAttribute(key, data.get(key));
+            for (Entry<String, Object> entry : data.entrySet()) {
+                request.setAttribute(entry.getKey(), entry.getValue());
             }
 
             request.getRequestDispatcher(modelView.getUrl()).forward(request, response);
@@ -61,7 +62,8 @@ public class MainProcess {
         }
     }
 
-    public static void init(FrontController controller) throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerPackageException {
+    public static void init(FrontController controller)
+            throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerPackageException {
         frontController = controller;
 
         String packageName = controller.getInitParameter("package_name");
