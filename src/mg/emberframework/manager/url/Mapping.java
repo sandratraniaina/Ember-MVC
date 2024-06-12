@@ -1,13 +1,16 @@
 package mg.emberframework.manager.url;
 
+import java.lang.reflect.Method;
+
 public class Mapping {
-    String className, methodName;
+    String className;
+    Method method;
 
     // Construtors
     public Mapping() {}
-    public Mapping(String className, String methodName) {
+    public Mapping(String className, Method methodName) {
         setClassName(className);
-        setMethodName(methodName);
+        setMethod(methodName);
     }
 
     // Getters and setters
@@ -19,11 +22,11 @@ public class Mapping {
         this.className = className;
     }
 
-    public String getMethodName() {
-        return methodName;
+    public Method getMethod() {
+        return method;
     }
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
+    public void setMethod(Method method) {
+        this.method = method;
     }
 }

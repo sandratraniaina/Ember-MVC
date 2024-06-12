@@ -44,7 +44,7 @@ public class MainProcess {
         }
 
         Class<?> clazz = Class.forName(mapping.getClassName());
-        Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethodName());
+        Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethod().getName());
 
         if (result instanceof String) {
             out.println(result.toString());
