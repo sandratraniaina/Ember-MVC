@@ -42,9 +42,8 @@ public class MainProcess {
         if (mapping == null) {
             throw new UrlNotFoundException("Oops, url not found!");
         }
-
-        Class<?> clazz = Class.forName(mapping.getClassName());
-        Object result = ReflectUtils.executeClassMethod(clazz, mapping.getMethod().getName());
+        
+        Object result = ReflectUtils.executeRequestMethod(mapping, request);
 
         if (result instanceof String) {
             out.println(result.toString());
