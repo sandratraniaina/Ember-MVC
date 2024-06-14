@@ -37,7 +37,7 @@ public class PackageScanner {
                 }
 
                 if (url != null && !"".equals(url)) {
-                    result.put(url, new Mapping(className, method.getName()));
+                    result.put(url, new Mapping(className, method));
                 }
             }
         }
