@@ -18,12 +18,22 @@ public class ReflectUtils {
         Method method = mapping.getMethod();
 
         for(Parameter parameter : method.getParameters()) {
-            Object object = "";
+            Class<?> clazz = parameter.getType();
+            Object object = null;
 
-            if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                object = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
-            }
-
+            if (ObjectUtils.isPrimitive(clazz)) {
+                if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                    object = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                } else {
+                    object = ObjectUtils.getDefaulValue(clazz);
+                }
+            } else {
+                if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                    String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
+                    
+                }
+            } 
+ 
             objects.add(object);
         }
     
