@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 
 public class ObjectUtils {
     public static boolean isPrimitive(Class<?> clazz) {
@@ -22,7 +21,7 @@ public class ObjectUtils {
     }
 
     public static Object getDefaulValue(Object object) {
-        HashMap<Class<?>, Object> keyValues = new HashMap<Class<?>, Object>();
+        HashMap<Class<?>, Object> keyValues = new HashMap<>();
         keyValues.put(Integer.TYPE, 0);
         keyValues.put(Double.TYPE, 0.0);
         keyValues.put(String.class, "");
