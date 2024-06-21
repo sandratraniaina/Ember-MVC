@@ -11,6 +11,15 @@ import mg.emberframework.annotation.RequestParameter;
 import mg.emberframework.manager.url.Mapping;
 
 public class ReflectUtils {
+
+    public static String getMethodName(String initial, String attributeName) {
+        return initial + Character.toUpperCase(attributeName.charAt(0)) + attributeName.substring(1);
+    }
+
+    public static String getSetterMethod(String attributeName) {
+        return  getMethodName("set", attributeName);
+    }
+
     public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, ClassNotFoundException {
         List<Object> objects = new ArrayList<>();
 
@@ -23,14 +32,15 @@ public class ReflectUtils {
 
             if (ObjectUtils.isPrimitive(clazz)) {
                 if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                    object = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                    String strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                    object = ObjectUtils.castObject(strValue, clazz);
                 } else {
                     object = ObjectUtils.getDefaultValue(clazz);
                 }
             } else {
                 if (parameter.isAnnotationPresent(RequestParameter.class)) {
                     String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
-                    
+                    object = ObjectUtils.getParameterInstance(clazz, annotationValue, request);
                 }
             } 
  
