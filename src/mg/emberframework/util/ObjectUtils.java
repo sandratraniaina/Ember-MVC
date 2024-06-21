@@ -6,7 +6,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class ObjectUtils {
+    public static List<String> getObjectAnnotationValues(String className, HttpServletRequest request) {
+        List<String> values = new ArrayList<>();
+
+        return values;
+    }
+
+    public static Object castObject(String value, Class<?> clazz) {
+        if (value == null) {
+            return null;
+        } else if (clazz == Integer.TYPE) {
+            return Integer.parseInt(value);
+        } else if (clazz == Double.TYPE) {
+            return Double.parseDouble(value);
+        } else if (clazz == Float.TYPE) {
+            return Float.parseFloat(value);
+        } else {
+            return value;
+        }
+    }
+
     public static boolean isPrimitive(Class<?> clazz) {
         List<Class<?>> primitiveTypes = new ArrayList<>();
         primitiveTypes.add(Integer.TYPE);
@@ -16,7 +38,8 @@ public class ObjectUtils {
         return primitiveTypes.contains(clazz);
     }
 
-    public static Object getDefaulValue(Class<?>  clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    public static Object getDefaultValue(Class<?> clazz) throws InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         return getDefaulValue(clazz.getConstructor().newInstance());
     }
 
