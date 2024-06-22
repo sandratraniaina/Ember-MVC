@@ -32,10 +32,11 @@ public class ObjectUtils {
 
         String attributeName = null, className = null, requestParamName = null, regex = null;
 
+        className = annotationValue.split("\\.")[0];
+        regex = className + ".*";
+
         while (requestParams.hasMoreElements()) {
             requestParamName = requestParams.nextElement();
-            className = requestParamName.split("\\.")[0];
-            regex = className + ".*";
 
             if (requestParamName.matches(regex)) {
                 attributeName = requestParamName.split("\\.")[1];
