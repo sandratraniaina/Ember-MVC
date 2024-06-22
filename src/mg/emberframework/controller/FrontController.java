@@ -26,12 +26,10 @@ public class FrontController extends HttpServlet {
         try {
             MainProcess.handleRequest(this, request, response);
         } catch (UrlNotFoundException | IllegalReturnTypeException e) {
-            // ExceptionHandler.handleException(e, response);
-            e.printStackTrace(response.getWriter());
+            ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
-            // ExceptionHandler.handleException(
-                    // new Exception("An error has occured while processing your request : " + e.getMessage()), response);
-            e.printStackTrace(response.getWriter());
+            ExceptionHandler.handleException(
+                    new Exception("An error has occured while processing your request : " + e.getMessage()), response);
         }
     }
 
