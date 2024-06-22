@@ -1,18 +1,49 @@
 package mg.emberframework.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 public class ObjectUtils {
-    public static List<String> getObjectAnnotationValues(String className, HttpServletRequest request) {
-        List<String> values = new ArrayList<>();
+    private static void setObjectAttributesValues(Object instance, String attributeName, String value)
+            throws NoSuchFieldException, SecurityException, NoSuchMethodException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException {
+        Field field = instance.getClass().getDeclaredField(attributeName);
 
-        return values;
+        Object fieldValue = castObject(value, field.getType());
+        String setterMethodName = ReflectUtils.getSetterMethod(attributeName);
+        Method method = instance.getClass().getMethod(setterMethodName, field.getType());
+        method.invoke(instance, fieldValue);
+    }
+
+    public static Object getParameterInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+            NoSuchMethodException, SecurityException, NoSuchFieldException {
+        Object instance = classType.getConstructor().newInstance();
+
+        Enumeration<String> requestParams = request.getParameterNames();
+
+        String attributeName = null, className = null, requestParamName = null, regex = null;
+
+        while (requestParams.hasMoreElements()) {
+            requestParamName = requestParams.nextElement();
+            className = requestParamName.split("\\.")[0];
+            regex = className + ".*";
+
+            if (requestParamName.matches(regex)) {
+                attributeName = requestParamName.split("\\.")[1];
+                setObjectAttributesValues(instance, attributeName, request.getParameter(requestParamName));
+            }
+        }
+
+        return instance;
     }
 
     public static Object castObject(String value, Class<?> clazz) {

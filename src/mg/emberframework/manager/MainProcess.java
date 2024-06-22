@@ -28,7 +28,7 @@ public class MainProcess {
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
             NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException {
+            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException {
         PrintWriter out = response.getWriter();
 
         if (controller.getException() != null) {
