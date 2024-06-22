@@ -28,14 +28,14 @@ public class ReflectUtils {
 
         for(Parameter parameter : method.getParameters()) {
             Class<?> clazz = parameter.getType();
-            Object object = null;
+            Object object = ObjectUtils.getDefaultValue(clazz);;
 
             if (ObjectUtils.isPrimitive(clazz)) {
                 if (parameter.isAnnotationPresent(RequestParameter.class)) {
                     String strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
-                    object = ObjectUtils.castObject(strValue, clazz);
+                    object = strValue != null ? ObjectUtils.castObject(strValue, clazz) : object;
                 } else {
-                    object = ObjectUtils.getDefaultValue(clazz);
+                    // TODO: Implement parameter name for value
                 }
             } else {
                 if (parameter.isAnnotationPresent(RequestParameter.class)) {
