@@ -30,7 +30,6 @@ public class FrontController extends HttpServlet {
         } catch (Exception e) {
             ExceptionHandler.handleException(
                     new Exception("An error has occured while processing your request : " + e.getMessage()), response);
-            // e.printStackTrace(response.getWriter());
         }
     }
 

@@ -11,22 +11,49 @@ import mg.emberframework.annotation.RequestParameter;
 import mg.emberframework.manager.url.Mapping;
 
 public class ReflectUtils {
-    public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException, ClassNotFoundException {
+
+    public static String getMethodName(String initial, String attributeName) {
+        return initial + Character.toUpperCase(attributeName.charAt(0)) + attributeName.substring(1);
+    }
+
+    public static String getSetterMethod(String attributeName) {
+        return getMethodName("set", attributeName);
+    }
+
+    public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request)
+            throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
+            InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         List<Object> objects = new ArrayList<>();
 
         Class<?> objClass = Class.forName(mapping.getClassName());
         Method method = mapping.getMethod();
 
-        for(Parameter parameter : method.getParameters()) {
-            Object object = "";
+        for (Parameter parameter : method.getParameters()) {
+            Class<?> clazz = parameter.getType();
+            Object object = ObjectUtils.getDefaultValue(clazz);
+            String strValue = null;
 
-            if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                object = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+            if (ObjectUtils.isPrimitive(clazz)) {
+                if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                    strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                    object = strValue != null ? ObjectUtils.castObject(strValue, clazz) : object;
+                } else {
+                    String paramName = parameter.getName();
+                    strValue = request.getParameter(paramName);
+                    if (strValue != null) {
+                        object = ObjectUtils.castObject(strValue, clazz);
+                    }
+                }
+            } else {
+                if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                    String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
+                    object = ObjectUtils.getParameterInstance(clazz, annotationValue, request);
+                }
             }
 
             objects.add(object);
         }
-    
+
         return executeClassMethod(objClass, method.getName(), objects.toArray());
     }
 
