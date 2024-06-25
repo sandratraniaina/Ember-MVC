@@ -26,10 +26,12 @@ public class FrontController extends HttpServlet {
         try {
             MainProcess.handleRequest(this, request, response);
         } catch (UrlNotFoundException | IllegalReturnTypeException e) {
+            // e.printStackTrace(response.getWriter());
             ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
+            // e.printStackTrace(response.getWriter());
             ExceptionHandler.handleException(
-                    new Exception("An error has occured while processing your request : " + e.getMessage()), response);
+                    new Exception(e.getMessage()), response);
         }
     }
 
@@ -39,9 +41,11 @@ public class FrontController extends HttpServlet {
         try {
             processRequest(req, resp);
         } catch (ServletException e) {
+            e.printStackTrace(resp.getWriter());
             ExceptionHandler.handleException(
                     new Exception("A servlet error has occured while executing doGet method", e.getCause()), resp);
         } catch (IOException e) {
+            e.printStackTrace(resp.getWriter());
             ExceptionHandler.handleException(
                     new Exception("An IO error has occured while executing doGet method", e.getCause()), resp);
         }
