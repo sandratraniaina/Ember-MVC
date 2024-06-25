@@ -31,15 +31,17 @@ public class ObjectUtils {
         Enumeration<String> requestParams = request.getParameterNames();
 
         String attributeName = null, className = null, requestParamName = null, regex = null;
+        String[] splitParamName = null;
 
         className = annotationValue.split("\\.")[0];
         regex = className + ".*";
 
         while (requestParams.hasMoreElements()) {
             requestParamName = requestParams.nextElement();
+            splitParamName = requestParamName.split("\\.");
 
-            if (requestParamName.matches(regex)) {
-                attributeName = requestParamName.split("\\.")[1];
+            if (requestParamName.matches(regex) && splitParamName.length >= 2) {
+                attributeName = splitParamName[1];
                 setObjectAttributesValues(instance, attributeName, request.getParameter(requestParamName));
             }
         }
