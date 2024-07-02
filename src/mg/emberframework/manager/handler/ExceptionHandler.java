@@ -18,13 +18,8 @@ public class ExceptionHandler {
             PrintWriter out = response.getWriter();
             if (!response.isCommitted()) {
                 response.setContentType("text/html");
-                String html = TagBuilder.bold(e.getMessage());
+                String html = TagBuilder.bold(e.toString());
                 out.println(html);
-                // if (e instanceof UrlNotFoundException) {
-                //     response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-                // } else {
-                //     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-                // }
             }
         } catch (IOException exc) {
             logger.log(Level.SEVERE, exc.getMessage());
