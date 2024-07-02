@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.controller.FrontController;
 import mg.emberframework.manager.data.ModelView;
+import mg.emberframework.manager.exception.AnnotationNotPresentException;
 import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
@@ -28,7 +29,7 @@ public class MainProcess {
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
             NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException {
+            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException, AnnotationNotPresentException {
         PrintWriter out = response.getWriter();
 
         if (controller.getException() != null) {

@@ -8,6 +8,7 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RequestParameter;
+import mg.emberframework.manager.exception.AnnotationNotPresentException;
 import mg.emberframework.manager.url.Mapping;
 
 public class ReflectUtils {
@@ -22,7 +23,7 @@ public class ReflectUtils {
 
     public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request)
             throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+            InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException, AnnotationNotPresentException {
         List<Object> objects = new ArrayList<>();
 
         Class<?> objClass = Class.forName(mapping.getClassName());
@@ -32,6 +33,10 @@ public class ReflectUtils {
             Class<?> clazz = parameter.getType();
             Object object = ObjectUtils.getDefaultValue(clazz);
             String strValue = null;
+
+            if (!parameter.isAnnotationPresent(RequestParameter.class)) {
+                throw new AnnotationNotPresentException("ETU2468 , one of you parameter does not have `RequestParameter` annotation");
+            }
 
             if (ObjectUtils.isPrimitive(clazz)) {
                 if (parameter.isAnnotationPresent(RequestParameter.class)) {
