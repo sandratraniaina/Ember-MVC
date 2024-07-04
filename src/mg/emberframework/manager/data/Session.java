@@ -6,6 +6,10 @@ public class Session {
     HttpSession userSession;
 
     // Class methods
+    public Object get(String name) {
+        return getUserSession().getAttribute(name);
+    }
+
     public void add(String name, Object value) {
         getUserSession().setAttribute(name, value);
     }
