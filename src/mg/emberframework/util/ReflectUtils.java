@@ -1,5 +1,6 @@
 package mg.emberframework.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -13,6 +14,15 @@ import mg.emberframework.manager.url.Mapping;
 
 public class ReflectUtils {
 
+    public static boolean hasAttributeOfType(Class<?> clazz, Class<?> type) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getType().equals(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static String getMethodName(String initial, String attributeName) {
         return initial + Character.toUpperCase(attributeName.charAt(0)) + attributeName.substring(1);
     }
@@ -23,7 +33,8 @@ public class ReflectUtils {
 
     public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request)
             throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException, AnnotationNotPresentException {
+            InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException,
+            AnnotationNotPresentException {
         List<Object> objects = new ArrayList<>();
 
         Class<?> objClass = Class.forName(mapping.getClassName());
@@ -33,7 +44,8 @@ public class ReflectUtils {
             Class<?> clazz = parameter.getType();
             Object object = ObjectUtils.getDefaultValue(clazz);
             if (!parameter.isAnnotationPresent(RequestParameter.class)) {
-                throw new AnnotationNotPresentException("ETU2468 , one of you parameter does not have `RequestParameter` annotation");
+                throw new AnnotationNotPresentException(
+                        "ETU2468 , one of you parameter does not have `RequestParameter` annotation");
             }
 
             object = ObjectUtils.getParameterInstance(request, parameter, clazz, object);
