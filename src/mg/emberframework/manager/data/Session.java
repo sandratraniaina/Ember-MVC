@@ -6,6 +6,17 @@ public class Session {
     HttpSession userSession;
 
     // Class methods
+    public void add(String name, Object value) {
+        getUserSession().setAttribute(name, value);
+    }
+    
+    public void remove(String name) {
+        getUserSession().removeAttribute(name);
+    }
+
+    public void clear() {
+        getUserSession().invalidate();
+    }
 
     // Contructor
     private Session() {
