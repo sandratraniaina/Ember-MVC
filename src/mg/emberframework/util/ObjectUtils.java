@@ -3,6 +3,7 @@ package mg.emberframework.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -10,8 +11,33 @@ import java.util.HashMap;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import mg.emberframework.annotation.RequestParameter;
 
 public class ObjectUtils {
+    public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz, Object object)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+            NoSuchFieldException {
+        String strValue;
+        if (ObjectUtils.isPrimitive(clazz)) {
+            if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                object = strValue != null ? ObjectUtils.castObject(strValue, clazz) : object;
+            } else {
+                String paramName = parameter.getName();
+                strValue = request.getParameter(paramName);
+                if (strValue != null) {
+                    object = ObjectUtils.castObject(strValue, clazz);
+                }
+            }
+        } else {
+            if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
+                object = ObjectUtils.getObjectInstance(clazz, annotationValue, request);
+            }
+        }
+        return object;
+    }
+
     private static void setObjectAttributesValues(Object instance, String attributeName, String value)
             throws NoSuchFieldException, SecurityException, NoSuchMethodException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
@@ -23,7 +49,7 @@ public class ObjectUtils {
         method.invoke(instance, fieldValue);
     }
 
-    public static Object getParameterInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
+    public static Object getObjectInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException, SecurityException, NoSuchFieldException {
         Object instance = classType.getConstructor().newInstance();

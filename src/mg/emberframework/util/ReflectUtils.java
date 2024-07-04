@@ -32,29 +32,11 @@ public class ReflectUtils {
         for (Parameter parameter : method.getParameters()) {
             Class<?> clazz = parameter.getType();
             Object object = ObjectUtils.getDefaultValue(clazz);
-            String strValue = null;
-
             if (!parameter.isAnnotationPresent(RequestParameter.class)) {
                 throw new AnnotationNotPresentException("ETU2468 , one of you parameter does not have `RequestParameter` annotation");
             }
 
-            if (ObjectUtils.isPrimitive(clazz)) {
-                if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                    strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
-                    object = strValue != null ? ObjectUtils.castObject(strValue, clazz) : object;
-                } else {
-                    String paramName = parameter.getName();
-                    strValue = request.getParameter(paramName);
-                    if (strValue != null) {
-                        object = ObjectUtils.castObject(strValue, clazz);
-                    }
-                }
-            } else {
-                if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                    String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
-                    object = ObjectUtils.getParameterInstance(clazz, annotationValue, request);
-                }
-            }
+            object = ObjectUtils.getParameterInstance(request, parameter, clazz, object);
 
             objects.add(object);
         }
