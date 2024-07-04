@@ -19,7 +19,8 @@ public class Session {
     }
 
     // Contructor
-    private Session() {
+    public Session(HttpSession session) {
+        setUserSession(session);
     }
 
     // Getters and setters

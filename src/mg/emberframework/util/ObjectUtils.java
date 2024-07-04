@@ -12,9 +12,11 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RequestParameter;
+import mg.emberframework.manager.data.Session;
 
 public class ObjectUtils {
-    public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz, Object object)
+    public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
+            Object object)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
             NoSuchFieldException {
         String strValue;
@@ -29,6 +31,8 @@ public class ObjectUtils {
                     object = ObjectUtils.castObject(strValue, clazz);
                 }
             }
+        } else if (clazz.equals(Session.class)) {
+            object = new Session(request.getSession());
         } else {
             if (parameter.isAnnotationPresent(RequestParameter.class)) {
                 String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
