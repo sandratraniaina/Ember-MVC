@@ -38,6 +38,7 @@ public class ReflectUtils {
         List<Object> objects = new ArrayList<>();
 
         Class<?> objClass = Class.forName(mapping.getClassName());
+        Object requestObject = objClass.getConstructor().newInstance();
         Method method = mapping.getMethod();
 
         for (Parameter parameter : method.getParameters()) {
@@ -53,7 +54,7 @@ public class ReflectUtils {
             objects.add(object);
         }
 
-        return executeClassMethod(objClass, method.getName(), objects.toArray());
+        return executeMethod(requestObject, method.getName(), objects.toArray());
     }
 
     public static Class<?>[] getArgsClasses(Object... args) {
