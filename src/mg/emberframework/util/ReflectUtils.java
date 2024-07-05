@@ -14,6 +14,8 @@ import mg.emberframework.manager.exception.AnnotationNotPresentException;
 import mg.emberframework.manager.url.Mapping;
 
 public class ReflectUtils {
+    private ReflectUtils() {
+    }
 
     public static boolean hasAttributeOfType(Class<?> clazz, Class<?> type) {
         for (Field field : clazz.getDeclaredFields()) {
@@ -93,7 +95,6 @@ public class ReflectUtils {
             throws NoSuchMethodException,
             SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             InstantiationException {
-        // Class<?>[] arguments = getArgsClasses(args);
         Object object = clazz.getConstructor().newInstance();
         return executeMethod(object, methodName, args);
     }

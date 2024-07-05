@@ -15,6 +15,9 @@ import mg.emberframework.annotation.RequestParameter;
 import mg.emberframework.manager.data.Session;
 
 public class ObjectUtils {
+    private ObjectUtils() {
+    }
+
     public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
             Object object)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
@@ -60,7 +63,10 @@ public class ObjectUtils {
 
         Enumeration<String> requestParams = request.getParameterNames();
 
-        String attributeName = null, className = null, requestParamName = null, regex = null;
+        String attributeName = null;
+        String className = null;
+        String requestParamName = null;
+        String regex = null;
         String[] splitParamName = null;
 
         className = annotationValue.split("\\.")[0];
