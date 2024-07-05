@@ -1,15 +1,16 @@
 package mg.emberframework.manager.data;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ModelView {
     String url;
-    HashMap<String, Object> data;
+    Map<String, Object> data;
 
     // Class method
     public void addObject(String attribute, Object object) {
         if (getData() == null) {
-            setData(new HashMap<String, Object>());
+            setData(new HashMap<>());
         }
         
         getData().put(attribute, object);
@@ -19,7 +20,7 @@ public class ModelView {
     public ModelView() {
     }
 
-    public ModelView(String url, HashMap<String, Object> data) {
+    public ModelView(String url, Map<String, Object> data) {
         setUrl(url);
         setData(data);
     }
@@ -31,10 +32,10 @@ public class ModelView {
     public void setUrl(String url) {
         this.url = url;
     }
-    public HashMap<String, Object> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
-    public void setData(HashMap<String, Object> data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 }

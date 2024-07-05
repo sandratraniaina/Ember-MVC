@@ -68,7 +68,7 @@ public class ExceptionHandler {
         }
     }
 
-    public static void handleException(Exception e, HttpServletResponse response) throws IOException {
+    public static void handleException(Exception e, HttpServletResponse response) {
         try {
             if (!response.isCommitted()) {
                 processError(response, HttpServletResponse.SC_NOT_FOUND, e);
@@ -78,7 +78,7 @@ public class ExceptionHandler {
         }
     }
 
-    public static void handleExceptions(List<Exception> exceptions, HttpServletResponse response) throws IOException {
+    public static void handleExceptions(List<Exception> exceptions, HttpServletResponse response) {
         for (Exception e : exceptions) {
             handleException(e, response);
         }
