@@ -9,6 +9,7 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RequestParameter;
+import mg.emberframework.manager.data.Session;
 import mg.emberframework.manager.exception.AnnotationNotPresentException;
 import mg.emberframework.manager.url.Mapping;
 
@@ -31,6 +32,17 @@ public class ReflectUtils {
         return getMethodName("set", attributeName);
     }
 
+    public static void setSessionAttribute(Object object, HttpServletRequest request) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        String methodName = null; 
+        for(Field field : object.getClass().getDeclaredFields()) {
+            if (field.getType().equals(Session.class)) {
+                methodName = getSetterMethod(field.getName());
+                Session session = new Session(request.getSession());
+                executeMethod(object, methodName, session);
+            }
+        }
+    }
+
     public static Object executeRequestMethod(Mapping mapping, HttpServletRequest request)
             throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException,
@@ -40,6 +52,8 @@ public class ReflectUtils {
         Class<?> objClass = Class.forName(mapping.getClassName());
         Object requestObject = objClass.getConstructor().newInstance();
         Method method = mapping.getMethod();
+        
+        setSessionAttribute(requestObject, request);
 
         for (Parameter parameter : method.getParameters()) {
             Class<?> clazz = parameter.getType();
