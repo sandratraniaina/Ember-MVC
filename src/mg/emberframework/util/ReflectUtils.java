@@ -60,7 +60,7 @@ public class ReflectUtils {
         for (Parameter parameter : method.getParameters()) {
             Class<?> clazz = parameter.getType();
             Object object = ObjectUtils.getDefaultValue(clazz);
-            if (!parameter.isAnnotationPresent(RequestParameter.class)) {
+            if (!parameter.isAnnotationPresent(RequestParameter.class) && !clazz.equals(Session.class)) {
                 throw new AnnotationNotPresentException(
                         "ETU2468 , one of you parameter does not have `RequestParameter` annotation");
             }

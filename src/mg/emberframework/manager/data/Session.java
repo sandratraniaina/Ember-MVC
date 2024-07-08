@@ -13,7 +13,7 @@ public class Session {
     public void add(String name, Object value) {
         getUserSession().setAttribute(name, value);
     }
-    
+
     public void remove(String name) {
         getUserSession().removeAttribute(name);
     }
@@ -23,6 +23,9 @@ public class Session {
     }
 
     // Contructor
+    public Session() {
+    }
+
     public Session(HttpSession session) {
         setUserSession(session);
     }
