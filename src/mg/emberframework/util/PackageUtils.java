@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PackageUtils {
+    private PackageUtils() {
+    }
+
     public static List<Method> getClassMethodsWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
-        List<Method> methods = new ArrayList<Method>();
+        List<Method> methods = new ArrayList<>();
         Method[] classMethods = clazz.getDeclaredMethods();
 
         for (Method method : classMethods) {
@@ -50,7 +53,7 @@ public class PackageUtils {
     public static List<Class<?>> getClassesWithAnnotation(String packageName, Class<? extends Annotation> annotationClass) throws ClassNotFoundException, IOException {
         List<Class<?>> classes = getClasses(packageName);
 
-        ArrayList<Class<?>> result = new ArrayList<Class<?>>();
+        ArrayList<Class<?>> result = new ArrayList<>();
         
         for(Class<?> clazz : classes) {
             if (clazz.isAnnotationPresent(annotationClass)) {

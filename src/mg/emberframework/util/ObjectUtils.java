@@ -3,6 +3,7 @@ package mg.emberframework.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -10,8 +11,40 @@ import java.util.HashMap;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import mg.emberframework.annotation.RequestParameter;
+import mg.emberframework.manager.data.Session;
 
 public class ObjectUtils {
+    private ObjectUtils() {
+    }
+
+    public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
+            Object object)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+            NoSuchFieldException {
+        String strValue;
+        if (ObjectUtils.isPrimitive(clazz)) {
+            if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                object = strValue != null ? ObjectUtils.castObject(strValue, clazz) : object;
+            } else {
+                String paramName = parameter.getName();
+                strValue = request.getParameter(paramName);
+                if (strValue != null) {
+                    object = ObjectUtils.castObject(strValue, clazz);
+                }
+            }
+        } else if (clazz.equals(Session.class)) {
+            object = new Session(request.getSession());
+        } else {
+            if (parameter.isAnnotationPresent(RequestParameter.class)) {
+                String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
+                object = ObjectUtils.getObjectInstance(clazz, annotationValue, request);
+            }
+        }
+        return object;
+    }
+
     private static void setObjectAttributesValues(Object instance, String attributeName, String value)
             throws NoSuchFieldException, SecurityException, NoSuchMethodException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
@@ -23,14 +56,17 @@ public class ObjectUtils {
         method.invoke(instance, fieldValue);
     }
 
-    public static Object getParameterInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
+    public static Object getObjectInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException, SecurityException, NoSuchFieldException {
         Object instance = classType.getConstructor().newInstance();
 
         Enumeration<String> requestParams = request.getParameterNames();
 
-        String attributeName = null, className = null, requestParamName = null, regex = null;
+        String attributeName = null;
+        String className = null;
+        String requestParamName = null;
+        String regex = null;
         String[] splitParamName = null;
 
         className = annotationValue.split("\\.")[0];

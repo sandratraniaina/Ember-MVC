@@ -14,8 +14,11 @@ import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.url.Mapping;
 
 public class PackageScanner {
+    private PackageScanner() {
+    }
+
     public static Map<String, Mapping> scanPackage(String packageName)
-            throws ClassNotFoundException, IOException, DuplicateUrlException,InvalidControllerPackageException {
+            throws ClassNotFoundException, IOException, DuplicateUrlException, InvalidControllerPackageException {
         if (packageName == null || packageName.isBlank()) {
             throw new InvalidControllerPackageException("Controller package provider cannot be null");
         }

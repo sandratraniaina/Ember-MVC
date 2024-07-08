@@ -1,6 +1,9 @@
 package mg.emberframework.util;
 
 public class TagBuilder {
+    private TagBuilder() {
+    }
+
     public static String enclose(String text, String tag) {
         return "<" + tag + ">" + text + "</" + tag + ">";
     }
@@ -13,9 +16,9 @@ public class TagBuilder {
         return enclose(text, "strong");
     }
 
-    public static String heading(String text, int level) throws Exception {
+    public static String heading(String text, int level) throws IllegalArgumentException {
         if (level < 0 || level > 6) {
-            throw new Exception("Invalid heading level");
+            throw new IllegalArgumentException("Invalid heading level");
         }
         String tag = "h" + level;
         return enclose(text, tag);

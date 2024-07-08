@@ -50,7 +50,7 @@ public class MainProcess {
             out.println(result.toString());
         } else if (result instanceof ModelView) {
             ModelView modelView = ((ModelView) result);
-            HashMap<String, Object> data = modelView.getData();
+            HashMap<String, Object> data = ((HashMap<String, Object>)modelView.getData());
 
             for (Entry<String, Object> entry : data.entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
