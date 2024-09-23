@@ -2,9 +2,16 @@ package mg.emberframework.manager.url;
 
 import java.lang.reflect.Method;
 
+import mg.emberframework.annotation.RestApi;
+
 public class Mapping {
     String className;
     Method method;
+
+    // Method
+    public boolean isRestAPI() {
+        return method.isAnnotationPresent(RestApi.class);
+    }
 
     // Construtors
     public Mapping() {}
