@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.gson.Gson;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +27,17 @@ import mg.emberframework.util.ReflectUtils;
 public class MainProcess {
     static FrontController frontController;
     private List<Exception> exceptions;
+
+    private static String handleRest(Object methodObject) {
+        Gson gson = new Gson();
+        String json = null;
+        if (methodObject instanceof ModelView) {
+            json = gson.toJson(((ModelView)methodObject).getData());
+        } else {
+            json = gson.toJson(methodObject);
+        }   
+        return json;
+    }
 
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
@@ -45,6 +58,10 @@ public class MainProcess {
         }
         
         Object result = ReflectUtils.executeRequestMethod(mapping, request);
+
+        if (mapping.isRestAPI()) {
+            result = handleRest(result);
+        }   
 
         if (result instanceof String) {
             out.println(result.toString());
