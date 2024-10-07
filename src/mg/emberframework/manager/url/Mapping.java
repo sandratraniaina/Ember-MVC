@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import mg.emberframework.annotation.RestApi;
 
 public class Mapping {
-    String className;
+    Class<?> clazz;
     Method method;
 
     // Method
@@ -15,18 +15,18 @@ public class Mapping {
 
     // Construtors
     public Mapping() {}
-    public Mapping(String className, Method methodName) {
-        setClassName(className);
+    public Mapping(Class<?> clazz, Method methodName) {
+        setClazz(clazz);
         setMethod(methodName);
     }
 
     // Getters and setters
-    public String getClassName() {
-        return className;
+    public Class<?> getClazz() {
+        return clazz;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setClazz(Class<?> clazz) {
+        this.clazz = clazz;
     }
 
     public Method getMethod() {

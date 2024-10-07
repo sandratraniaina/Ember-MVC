@@ -29,7 +29,6 @@ public class PackageScanner {
                 Controller.class);
         for (Class<?> clazz : classes) {
             List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, URL.class);
-            String className = clazz.getName();
 
             for (Method method : classMethods) {
                 URL methodAnnotation = method.getAnnotation(URL.class);
@@ -40,7 +39,7 @@ public class PackageScanner {
                 }
 
                 if (url != null && !"".equals(url)) {
-                    result.put(url, new Mapping(className, method));
+                    result.put(url, new Mapping(clazz, method));
                 }
             }
         }
