@@ -29,7 +29,8 @@ public class MainProcess {
     static FrontController frontController;
     private List<Exception> exceptions;
 
-    private static String handleRest(Object methodObject) {
+    private static String handleRest(Object methodObject, HttpServletResponse response) {
+        response.setContentType("application/json");
         Gson gson = new Gson();
         String json = null;
         if (methodObject instanceof ModelView) {
@@ -67,7 +68,7 @@ public class MainProcess {
         Object result = ReflectUtils.executeRequestMethod(mapping, request);
 
         if (mapping.isRestAPI()) {
-            result = handleRest(result);
+            result = handleRest(result, response);
         }   
 
         if (result instanceof String) {
