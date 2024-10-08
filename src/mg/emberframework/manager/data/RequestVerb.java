@@ -1,8 +1,8 @@
 package mg.emberframework.manager.data;
 
-public enum RequestVerb {
-    GET,
-    POST,
-    PUT,
-    DELETE
+public class RequestVerb {
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String DELETE = "DELETE";
+    public static final String PUT = "PUT";
 }

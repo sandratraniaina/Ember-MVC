@@ -9,7 +9,7 @@ import mg.emberframework.manager.data.RequestVerb;
 public class Mapping {
     Class<?> clazz;
     Method method;
-    RequestVerb requestVerb = RequestVerb.GET;
+    String requestVerb = RequestVerb.GET;
 
     // Method
     public boolean isRestAPI() {
@@ -25,19 +25,19 @@ public class Mapping {
     }
 
     // Getters and setters
-    public RequestVerb getRequestVerb() {
+    public String getRequestVerb() {
         return requestVerb;
     }
 
     public void setRequestVerb() {
-        RequestVerb temp = this.requestVerb;
+        String temp = RequestVerb.GET;
         if (this.getMethod().isAnnotationPresent(POST.class)) {
             temp = RequestVerb.POST;
         }
         setRequestVerb(temp);
     }
 
-    public void setRequestVerb(RequestVerb requestVerb) {
+    public void setRequestVerb(String requestVerb) {
         this.requestVerb = requestVerb;
     }
 
