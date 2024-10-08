@@ -18,6 +18,7 @@ import mg.emberframework.manager.exception.AnnotationNotPresentException;
 import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
+import mg.emberframework.manager.exception.InvalidRequestException;
 import mg.emberframework.manager.exception.UrlNotFoundException;
 import mg.emberframework.manager.handler.ExceptionHandler;
 import mg.emberframework.manager.url.Mapping;
@@ -39,11 +40,13 @@ public class MainProcess {
         return json;
     }
 
+    @SuppressWarnings("unused")
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
             NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException, AnnotationNotPresentException {
+            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException, AnnotationNotPresentException, InvalidRequestException {
         PrintWriter out = response.getWriter();
+        String method = request.getMethod();
 
         if (controller.getException() != null) {
             ExceptionHandler.handleException(controller.getException(), response);
@@ -52,6 +55,10 @@ public class MainProcess {
 
         String url = request.getRequestURI().substring(request.getContextPath().length());
         Mapping mapping = frontController.getURLMapping().get(url);
+
+        if (!method.equalsIgnoreCase(mapping.getRequestVerb())) {
+            throw new InvalidRequestException("Invalid request method exception!");
+        }
 
         if (mapping == null) {
             throw new UrlNotFoundException("Oops, url not found!");
