@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import mg.emberframework.annotation.Controller;
-import mg.emberframework.annotation.Get;
+import mg.emberframework.annotation.request.URL;
 import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.url.Mapping;
@@ -28,11 +28,10 @@ public class PackageScanner {
         ArrayList<Class<?>> classes = (ArrayList<Class<?>>) PackageUtils.getClassesWithAnnotation(packageName,
                 Controller.class);
         for (Class<?> clazz : classes) {
-            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Get.class);
-            String className = clazz.getName();
+            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, URL.class);
 
             for (Method method : classMethods) {
-                Get methodAnnotation = method.getAnnotation(Get.class);
+                URL methodAnnotation = method.getAnnotation(URL.class);
                 String url = methodAnnotation.value();
 
                 if (result.containsKey(url)) {
@@ -40,7 +39,7 @@ public class PackageScanner {
                 }
 
                 if (url != null && !"".equals(url)) {
-                    result.put(url, new Mapping(className, method));
+                    result.put(url, new Mapping(clazz, method));
                 }
             }
         }

@@ -1,9 +1,9 @@
-package mg.emberframework.annotation;
+package mg.emberframework.annotation.request;
 
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Retention;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Get {
-    String value();
+public @interface GET {
+
 }

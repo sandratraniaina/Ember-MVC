@@ -3,10 +3,13 @@ package mg.emberframework.manager.url;
 import java.lang.reflect.Method;
 
 import mg.emberframework.annotation.RestApi;
+import mg.emberframework.annotation.request.POST;
+import mg.emberframework.manager.data.RequestVerb;
 
 public class Mapping {
-    String className;
+    Class<?> clazz;
     Method method;
+    String requestVerb = RequestVerb.GET;
 
     // Method
     public boolean isRestAPI() {
@@ -15,18 +18,35 @@ public class Mapping {
 
     // Construtors
     public Mapping() {}
-    public Mapping(String className, Method methodName) {
-        setClassName(className);
-        setMethod(methodName);
+    public Mapping(Class<?> clazz, Method method) {
+        setClazz(clazz);
+        setMethod(method);
+        setRequestVerb();
     }
 
     // Getters and setters
-    public String getClassName() {
-        return className;
+    public String getRequestVerb() {
+        return requestVerb;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setRequestVerb() {
+        String temp = RequestVerb.GET;
+        if (this.getMethod().isAnnotationPresent(POST.class)) {
+            temp = RequestVerb.POST;
+        }
+        setRequestVerb(temp);
+    }
+
+    public void setRequestVerb(String requestVerb) {
+        this.requestVerb = requestVerb;
+    }
+
+    public Class<?> getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(Class<?> clazz) {
+        this.clazz = clazz;
     }
 
     public Method getMethod() {

@@ -51,7 +51,7 @@ public class ReflectUtils {
             AnnotationNotPresentException {
         List<Object> objects = new ArrayList<>();
 
-        Class<?> objClass = Class.forName(mapping.getClassName());
+        Class<?> objClass = mapping.getClazz();
         Object requestObject = objClass.getConstructor().newInstance();
         Method method = mapping.getMethod();
         
