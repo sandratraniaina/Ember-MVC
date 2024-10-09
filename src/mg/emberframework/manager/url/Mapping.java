@@ -1,46 +1,31 @@
 package mg.emberframework.manager.url;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
-import mg.emberframework.annotation.RestApi;
-import mg.emberframework.annotation.request.POST;
-import mg.emberframework.manager.data.RequestVerb;
+import mg.emberframework.manager.data.VerbMethod;
+import mg.emberframework.manager.exception.DuplicateUrlException;
 
 public class Mapping {
     Class<?> clazz;
-    Method method;
-    String requestVerb = RequestVerb.GET;
+    Set<VerbMethod> verbMethods = new HashSet<>();
 
     // Method
-    public boolean isRestAPI() {
-        return method.isAnnotationPresent(RestApi.class);
+    public void addVerbMethod(VerbMethod verbMethod) throws DuplicateUrlException {
+        if (getVerbMethods().contains(verbMethod)) {
+            throw new DuplicateUrlException("Duplicate url method!!");
+        }
+        getVerbMethods().add(verbMethod);
     }
 
     // Construtors
     public Mapping() {}
-    public Mapping(Class<?> clazz, Method method) {
+    public Mapping(Class<?> clazz) {
         setClazz(clazz);
-        setMethod(method);
-        setRequestVerb();
     }
 
     // Getters and setters
-    public String getRequestVerb() {
-        return requestVerb;
-    }
-
-    public void setRequestVerb() {
-        String temp = RequestVerb.GET;
-        if (this.getMethod().isAnnotationPresent(POST.class)) {
-            temp = RequestVerb.POST;
-        }
-        setRequestVerb(temp);
-    }
-
-    public void setRequestVerb(String requestVerb) {
-        this.requestVerb = requestVerb;
-    }
-
     public Class<?> getClazz() {
         return clazz;
     }
@@ -49,11 +34,11 @@ public class Mapping {
         this.clazz = clazz;
     }
 
-    public Method getMethod() {
-        return method;
+    public Set<VerbMethod> getVerbMethods() {
+        return verbMethods;
     }
 
-    public void setMethod(Method method) {
-        this.method = method;
+    public void setVerbMethods(Set<VerbMethod> verbMethods) {
+        this.verbMethods = verbMethods;
     }
 }
