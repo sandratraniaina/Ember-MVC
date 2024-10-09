@@ -2,9 +2,16 @@ package mg.emberframework.manager.data;
 
 import java.lang.reflect.Method;
 
+import mg.emberframework.annotation.RestApi;
+
 public class VerbMethod {
     Method method;
     String verb;
+
+    // Method
+    public boolean isRestAPI() {
+        return method.isAnnotationPresent(RestApi.class);
+    }
 
     // Constructor
     public VerbMethod(Method method, String verb) {
@@ -16,12 +23,15 @@ public class VerbMethod {
     public Method getMethod() {
         return method;
     }
+
     public void setMethod(Method method) {
         this.method = method;
     }
+
     public String getVerb() {
         return verb;
     }
+
     public void setVerb(String verb) {
         this.verb = verb;
     }
