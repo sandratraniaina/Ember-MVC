@@ -6,12 +6,22 @@ import java.util.Set;
 
 import mg.emberframework.manager.data.VerbMethod;
 import mg.emberframework.manager.exception.DuplicateUrlException;
+import mg.emberframework.manager.exception.InvalidRequestException;
 
 public class Mapping {
     Class<?> clazz;
     Set<VerbMethod> verbMethods = new HashSet<>();
 
     // Method
+    public VerbMethod getSpecificVerbMethod(String verb) throws InvalidRequestException {
+        for(VerbMethod verbMethod : getVerbMethods()) {
+            if (verbMethod.getVerb().equalsIgnoreCase(verb)) {
+                return verbMethod;
+            }
+        }
+        throw new InvalidRequestException("No matched verb for the url");
+    }
+
     public void addVerbMethod(VerbMethod verbMethod) throws DuplicateUrlException {
         if (getVerbMethods().contains(verbMethod)) {
             throw new DuplicateUrlException("Duplicate url method!!");
