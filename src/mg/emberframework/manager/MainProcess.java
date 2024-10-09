@@ -57,11 +57,12 @@ public class MainProcess {
 
         String url = request.getRequestURI().substring(request.getContextPath().length());
         Mapping mapping = frontController.getURLMapping().get(url);
-        VerbMethod verbMethod = mapping.getSpecificVerbMethod(verb);
-
+        
         if (mapping == null) {
             throw new UrlNotFoundException("Oops, url not found!");
         }
+        response.getWriter().write(new Gson().toJson(mapping.getVerbMethods()));
+        VerbMethod verbMethod = mapping.getSpecificVerbMethod(verb);
         
         Object result = ReflectUtils.executeRequestMethod(mapping, request, verb);
 

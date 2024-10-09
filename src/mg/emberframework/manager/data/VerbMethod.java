@@ -43,9 +43,7 @@ public class VerbMethod {
             return false;
         }
         VerbMethod other = (VerbMethod) obj;
-        if (other.getVerb().equalsIgnoreCase(this.getVerb())) {
-            return true;
-        }
-        return false;
+        
+        return other.getVerb().equalsIgnoreCase(this.getVerb());
     }
 }

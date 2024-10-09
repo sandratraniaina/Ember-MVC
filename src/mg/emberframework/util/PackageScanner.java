@@ -38,8 +38,9 @@ public class PackageScanner {
                 
                 VerbMethod verbMethod = new VerbMethod(method, RequestVerb.getMethodVerb(method));
 
-                Mapping mapping = result.get("url");
-                if (result.containsKey(url) && mapping != null) {
+                Mapping mapping = result.get(url);
+                
+                if (mapping != null) {
                     mapping.addVerbMethod(verbMethod);
                 } else {
                     mapping = new Mapping(clazz);

@@ -11,7 +11,7 @@ public class RequestVerb {
     public static String getMethodVerb(Method method) {
         String verb = RequestVerb.GET;
         if (method.isAnnotationPresent(mg.emberframework.annotation.request.POST.class)) {
-            verb = POST;
+            verb = RequestVerb.POST;
         }
         return verb;
     }
