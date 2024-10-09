@@ -1,6 +1,5 @@
 package mg.emberframework.manager.url;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ public class Mapping {
                 return verbMethod;
             }
         }
-        throw new InvalidRequestException("No matched verb for the url");
+        throw new InvalidRequestException("Invalid request method");
     }
 
     public void addVerbMethod(VerbMethod verbMethod) throws DuplicateUrlException {
