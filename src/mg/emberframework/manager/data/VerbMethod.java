@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 import mg.emberframework.annotation.RestApi;
-import mg.emberframework.manager.exception.DuplicateUrlException;
-import mg.emberframework.manager.url.Mapping;
 
 public class VerbMethod {
     Method method;
