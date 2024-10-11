@@ -31,7 +31,6 @@ public class MainProcess {
     private List<Exception> exceptions;
 
     private static String handleRest(Object methodObject, HttpServletResponse response) {
-        response.setContentType("application/json");
         Gson gson = new Gson();
         String json = null;
         if (methodObject instanceof ModelView) {
@@ -39,6 +38,7 @@ public class MainProcess {
         } else {
             json = gson.toJson(methodObject);
         }   
+        response.setContentType("application/json");
         return json;
     }
 
@@ -61,7 +61,7 @@ public class MainProcess {
         if (mapping == null) {
             throw new UrlNotFoundException("Oops, url not found!");
         }
-        response.getWriter().write(new Gson().toJson(mapping.getVerbMethods()));
+        
         VerbMethod verbMethod = mapping.getSpecificVerbMethod(verb);
         
         Object result = ReflectUtils.executeRequestMethod(mapping, request, verb);

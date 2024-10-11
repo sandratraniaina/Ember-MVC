@@ -3,6 +3,7 @@ package mg.emberframework.manager.data;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RestApi;
 
 public class VerbMethod {
@@ -10,6 +11,11 @@ public class VerbMethod {
     String verb;
 
     // Method
+    public boolean isRequestValid(HttpServletRequest request) {
+        String method = request.getMethod();
+        return getVerb().equalsIgnoreCase(method);
+    }
+
     public boolean isRestAPI() {
         return method.isAnnotationPresent(RestApi.class);
     }
