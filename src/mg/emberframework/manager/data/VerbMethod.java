@@ -39,20 +39,6 @@ public class VerbMethod {
         this.verb = verb;
     }
 
-    public static void main(String[] args) {
-        Mapping mapping = new Mapping();
-        VerbMethod method = new VerbMethod(null, "POST");
-        VerbMethod method2 = new VerbMethod(null, "GET");
-
-        try {
-            mapping.addVerbMethod(method);
-            System.out.println(mapping.getVerbMethods().contains(method2));
-            mapping.addVerbMethod(method2);
-        } catch (DuplicateUrlException e) {
-            e.printStackTrace();
-        }
-    }
-
     // Override methods
     @Override
     public boolean equals(Object obj) {
