@@ -42,7 +42,6 @@ public class MainProcess {
         return json;
     }
 
-    @SuppressWarnings("unused")
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
             NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
