@@ -9,6 +9,8 @@ import java.util.Map;
 
 import mg.emberframework.annotation.Controller;
 import mg.emberframework.annotation.request.URL;
+import mg.emberframework.manager.data.RequestVerb;
+import mg.emberframework.manager.data.VerbMethod;
 import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.url.Mapping;
@@ -33,13 +35,18 @@ public class PackageScanner {
             for (Method method : classMethods) {
                 URL methodAnnotation = method.getAnnotation(URL.class);
                 String url = methodAnnotation.value();
+                
+                VerbMethod verbMethod = new VerbMethod(method, RequestVerb.getMethodVerb(method));
 
-                if (result.containsKey(url)) {
-                    throw new DuplicateUrlException("Duplicated url \"" + url + "\"");
-                }
+                Mapping mapping = result.get(url);
+                
+                if (mapping != null) {
+                    mapping.addVerbMethod(verbMethod);
+                } else {
+                    mapping = new Mapping(clazz);
 
-                if (url != null && !"".equals(url)) {
-                    result.put(url, new Mapping(clazz, method));
+                    mapping.addVerbMethod(verbMethod);
+                    result.put(url, mapping);
                 }
             }
         }

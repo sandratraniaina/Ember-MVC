@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mg.emberframework.controller.FrontController;
 import mg.emberframework.manager.data.ModelView;
+import mg.emberframework.manager.data.VerbMethod;
 import mg.emberframework.manager.exception.AnnotationNotPresentException;
 import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
@@ -30,7 +31,6 @@ public class MainProcess {
     private List<Exception> exceptions;
 
     private static String handleRest(Object methodObject, HttpServletResponse response) {
-        response.setContentType("application/json");
         Gson gson = new Gson();
         String json = null;
         if (methodObject instanceof ModelView) {
@@ -38,16 +38,16 @@ public class MainProcess {
         } else {
             json = gson.toJson(methodObject);
         }   
+        response.setContentType("application/json");
         return json;
     }
 
-    @SuppressWarnings("unused")
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
             NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException, AnnotationNotPresentException, InvalidRequestException {
         PrintWriter out = response.getWriter();
-        String method = request.getMethod();
+        String verb = request.getMethod();
 
         if (controller.getException() != null) {
             ExceptionHandler.handleException(controller.getException(), response);
@@ -56,18 +56,16 @@ public class MainProcess {
 
         String url = request.getRequestURI().substring(request.getContextPath().length());
         Mapping mapping = frontController.getURLMapping().get(url);
-
-        if (!method.equalsIgnoreCase(mapping.getRequestVerb())) {
-            throw new InvalidRequestException("Invalid request method exception!");
-        }
-
+        
         if (mapping == null) {
             throw new UrlNotFoundException("Oops, url not found!");
         }
         
-        Object result = ReflectUtils.executeRequestMethod(mapping, request);
+        VerbMethod verbMethod = mapping.getSpecificVerbMethod(verb);
+        
+        Object result = ReflectUtils.executeRequestMethod(mapping, request, verb);
 
-        if (mapping.isRestAPI()) {
+        if (verbMethod.isRestAPI()) {
             result = handleRest(result, response);
         }   
 
