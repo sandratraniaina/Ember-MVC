@@ -4,9 +4,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 
 public class FileUtils {
+    public byte[] getPartByte(String name, HttpServletRequest request) throws IOException {
+        Part part = request.getPart(name);
+        return getPartByte(part);
+    }
+
     public byte[] getPartByte(Part part) throws IOException {
         try (InputStream inputStream = part.getInputStream();
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
