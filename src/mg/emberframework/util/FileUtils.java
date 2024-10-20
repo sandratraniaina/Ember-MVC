@@ -10,7 +10,7 @@ import jakarta.servlet.http.Part;
 import mg.emberframework.manager.data.File;
 
 public class FileUtils {
-    public File createRequestFile(String name, HttpServletRequest request) throws IOException, ServletException {
+    public static File createRequestFile(String name, HttpServletRequest request) throws IOException, ServletException {
         Part part = request.getPart(name);
 
         String fileName = part.getSubmittedFileName();
@@ -19,12 +19,12 @@ public class FileUtils {
         return new File(fileName, bytes);
     } 
 
-    public byte[] getPartByte(String name, HttpServletRequest request) throws IOException, ServletException {
+    public static byte[] getPartByte(String name, HttpServletRequest request) throws IOException, ServletException {
         Part part = request.getPart(name);
         return getPartByte(part);
     }
 
-    public byte[] getPartByte(Part part) throws IOException {
+    public static byte[] getPartByte(Part part) throws IOException {
         try (InputStream inputStream = part.getInputStream();
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
