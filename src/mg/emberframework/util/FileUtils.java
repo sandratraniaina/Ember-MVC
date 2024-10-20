@@ -39,10 +39,10 @@ public class FileUtils {
     }
 
     public static String createFilePath(String dirPath, String fileName) {
-        dirPath = dirPath.replaceAll("/+$", "");
-        fileName = fileName.replaceAll("^/+", "");
+        dirPath = dirPath.replaceAll("\\\\+$", "");
+        fileName = fileName.replaceAll("^\\\\+", "");
 
-        return dirPath + "/" + fileName;
+        return dirPath + "\\" + fileName;
     }
 
     public static String getSimpleFileName(String fileName, String extension) {
