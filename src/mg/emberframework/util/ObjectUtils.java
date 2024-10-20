@@ -1,5 +1,7 @@
 package mg.emberframework.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,6 +12,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RequestParameter;
 import mg.emberframework.manager.data.Session;
@@ -21,11 +24,14 @@ public class ObjectUtils {
     public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
             Object object)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-            NoSuchFieldException {
+            NoSuchFieldException, IOException, ServletException {
         String strValue;
+        String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
+
         if (ObjectUtils.isPrimitive(clazz)) {
+
             if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                strValue = request.getParameter(parameter.getAnnotation(RequestParameter.class).value());
+                strValue = request.getParameter(annotationValue);
                 object = strValue != null ? ObjectUtils.castObject(strValue, clazz) : object;
             } else {
                 String paramName = parameter.getName();
@@ -36,9 +42,11 @@ public class ObjectUtils {
             }
         } else if (clazz.equals(Session.class)) {
             object = new Session(request.getSession());
+        } else if (clazz.equals(File.class)) {
+            object = FileUtils.createRequestFile(annotationValue, request);
         } else {
+            
             if (parameter.isAnnotationPresent(RequestParameter.class)) {
-                String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
                 object = ObjectUtils.getObjectInstance(clazz, annotationValue, request);
             }
         }
