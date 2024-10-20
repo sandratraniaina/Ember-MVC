@@ -30,8 +30,7 @@ public class FrontController extends HttpServlet {
         } catch (UrlNotFoundException | IllegalReturnTypeException e) {
             ExceptionHandler.handleException(e, response);
         } catch (Exception e) {
-            ExceptionHandler.handleException(
-                    new Exception(e.getMessage()), response);
+            ExceptionHandler.handleException(e, response);
         }
     }
 
@@ -42,10 +41,11 @@ public class FrontController extends HttpServlet {
             processRequest(req, resp);
         } catch (ServletException e) {
             ExceptionHandler.handleException(
-                    new Exception("A servlet error has occured while executing doGet method", e.getCause()), resp);
+                    new ServletException("A servlet error has occured while executing doGet method", e.getCause()),
+                    resp);
         } catch (IOException e) {
             ExceptionHandler.handleException(
-                    new Exception("An IO error has occured while executing doGet method", e.getCause()), resp);
+                    new IOException("An IO error has occured while executing doGet method", e.getCause()), resp);
         }
     }
 
@@ -55,10 +55,11 @@ public class FrontController extends HttpServlet {
             processRequest(req, resp);
         } catch (ServletException e) {
             ExceptionHandler.handleException(
-                    new Exception("A servlet error has occured while executing doPost method", e.getCause()), resp);
+                    new ServletException("A servlet error has occured while executing doPost method", e.getCause()),
+                    resp);
         } catch (IOException e) {
             ExceptionHandler.handleException(
-                    new Exception("An IO error has occured while executing doPost method", e.getCause()), resp);
+                    new IOException("An IO error has occured while executing doPost method", e.getCause()), resp);
         }
     }
 
