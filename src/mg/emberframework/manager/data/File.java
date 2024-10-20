@@ -10,6 +10,10 @@ public class File {
     byte[] fileBytes;
 
     // Method
+    public void rename(String fileName) {
+        setFileName(fileName);
+    }
+
     public void writeTo(String dirPath) throws IOException {
         String filePath = FileUtils.createFilePath(dirPath, getFileName());
 
@@ -29,13 +33,13 @@ public class File {
     public String getFileName() {
         return fileName;
     }
-    public void setFileName(String fileName) {
+    private void setFileName(String fileName) {
         this.fileName = fileName;
     }
     public byte[] getFileBytes() {
         return fileBytes;
     }
-    public void setFileBytes(byte[] fileBytes) {
+    private void setFileBytes(byte[] fileBytes) {
         this.fileBytes = fileBytes;
     }
 }
