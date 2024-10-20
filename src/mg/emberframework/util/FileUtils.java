@@ -7,8 +7,18 @@ import java.io.InputStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+import mg.emberframework.manager.data.File;
 
 public class FileUtils {
+    public File createRequestFile(String name, HttpServletRequest request) throws IOException, ServletException {
+        Part part = request.getPart(name);
+
+        String fileName = part.getSubmittedFileName();
+        byte[] bytes = getPartByte(part);
+
+        return new File(fileName, bytes);
+    } 
+
     public byte[] getPartByte(String name, HttpServletRequest request) throws IOException, ServletException {
         Part part = request.getPart(name);
         return getPartByte(part);
