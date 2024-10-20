@@ -1,8 +1,22 @@
 package mg.emberframework.manager.data;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import mg.emberframework.util.FileUtils;
+
 public class File {
     String fileName;
     byte[] fileBytes;
+
+    // Method
+    public void writeTo(String dirPath) throws IOException {
+        String filePath = FileUtils.createFilePath(dirPath, getFileName());
+
+        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+            outputStream.write(fileBytes);
+        }
+    }
 
     // Contructor
     public File() {}
