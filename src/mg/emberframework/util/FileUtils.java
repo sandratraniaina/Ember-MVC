@@ -4,11 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 
 public class FileUtils {
-    public byte[] getPartByte(String name, HttpServletRequest request) throws IOException {
+    public byte[] getPartByte(String name, HttpServletRequest request) throws IOException, ServletException {
         Part part = request.getPart(name);
         return getPartByte(part);
     }
