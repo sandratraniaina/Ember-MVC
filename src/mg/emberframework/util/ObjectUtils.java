@@ -1,6 +1,5 @@
 package mg.emberframework.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +14,7 @@ import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RequestParameter;
+import mg.emberframework.manager.data.File;
 import mg.emberframework.manager.data.Session;
 
 public class ObjectUtils {
@@ -26,7 +26,9 @@ public class ObjectUtils {
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
             NoSuchFieldException, IOException, ServletException {
         String strValue;
-        String annotationValue = parameter.getAnnotation(RequestParameter.class).value();
+
+        RequestParameter annotatedType = parameter.getAnnotation(RequestParameter.class);
+        String annotationValue = annotatedType != null ? annotatedType.value() : "";
 
         if (ObjectUtils.isPrimitive(clazz)) {
 
