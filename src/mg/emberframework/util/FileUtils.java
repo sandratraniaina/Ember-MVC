@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import mg.emberframework.manager.data.File;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class FileUtils {
     public static File createRequestFile(String name, HttpServletRequest request) throws IOException, ServletException {
         Part part = request.getPart(name);
@@ -17,7 +20,7 @@ public class FileUtils {
         byte[] bytes = getPartByte(part);
 
         return new File(fileName, bytes);
-    } 
+    }
 
     public static byte[] getPartByte(String name, HttpServletRequest request) throws IOException, ServletException {
         Part part = request.getPart(name);
@@ -39,10 +42,8 @@ public class FileUtils {
     }
 
     public static String createFilePath(String dirPath, String fileName) {
-        dirPath = dirPath.replaceAll("\\\\+$", "");
-        fileName = fileName.replaceAll("^\\\\+", "");
-
-        return dirPath + "\\" + fileName;
+        Path fullPath = Paths.get(dirPath, fileName);
+        return fullPath.toString();
     }
 
     public static String getSimpleFileName(String fileName, String extension) {
@@ -51,7 +52,7 @@ public class FileUtils {
 
     public static String getFileExtension(String fileName) {
         if (fileName == null || fileName.lastIndexOf(".") == -1) {
-            return ""; 
+            return "";
         }
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
