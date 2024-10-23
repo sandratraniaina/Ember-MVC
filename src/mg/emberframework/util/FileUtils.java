@@ -56,6 +56,20 @@ public class FileUtils {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
+    public static String changeFileName(String oldFileName, String newBaseName) {
+        if (oldFileName == null || newBaseName == null) {
+            return null;
+        }
+
+        String extension = getFileExtension(oldFileName);
+
+        if (extension.isEmpty()) {
+            return newBaseName;
+        }
+
+        return newBaseName + "." + extension;
+    }
+
     private FileUtils() {
     }
 }
