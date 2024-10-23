@@ -49,6 +49,13 @@ public class FileUtils {
         return fileName.substring(0, (fileName.length() - extension.length()) - 1);
     }
 
+    public static String getFileExtension(String fileName) {
+        if (fileName == null || fileName.lastIndexOf(".") == -1) {
+            return ""; 
+        }
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
     private FileUtils() {
     }
 }
