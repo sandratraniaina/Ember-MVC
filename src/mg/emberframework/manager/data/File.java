@@ -10,8 +10,9 @@ public class File {
     byte[] fileBytes;
 
     // Method
-    public void rename(String fileName) {
-        setFileName(fileName);
+    public void rename(String newFileName) {
+        String newName = FileUtils.changeFileName(getFileName(), newFileName);
+        setFileName(newName);
     }
 
     public void writeTo(String dirPath) throws IOException {
