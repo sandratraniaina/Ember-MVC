@@ -5,14 +5,10 @@ import java.util.Map;
 
 public class ModelView {
     String url;
-    Map<String, Object> data;
+    Map<String, Object> data = new HashMap<>();
 
     // Class method
     public void addObject(String attribute, Object object) {
-        if (getData() == null) {
-            setData(new HashMap<>());
-        }
-        
         getData().put(attribute, object);
     }
 
