@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import mg.emberframework.annotation.validation.Date;
 import mg.emberframework.manager.exception.ModelValidationException;
 
-public class DateValidator implements ValidatorInterface{
+public class DateValidator implements FieldValidator{
 
     @Override
     public void validate(String value, Annotation annotation,Field field) throws ModelValidationException {
