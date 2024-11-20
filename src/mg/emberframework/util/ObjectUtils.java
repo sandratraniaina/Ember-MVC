@@ -55,13 +55,12 @@ public class ObjectUtils {
         return object;
     }
 
-    private static void setObjectAttributesValues(Object instance, String attributeName, String value)
+    private static void setObjectAttributesValues(Object instance, Field field, String value)
             throws NoSuchFieldException, SecurityException, NoSuchMethodException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
-        Field field = instance.getClass().getDeclaredField(attributeName);
 
         Object fieldValue = castObject(value, field.getType());
-        String setterMethodName = ReflectUtils.getSetterMethod(attributeName);
+        String setterMethodName = ReflectUtils.getSetterMethod(field.getName());
         Method method = instance.getClass().getMethod(setterMethodName, field.getType());
         method.invoke(instance, fieldValue);
     }
@@ -88,7 +87,10 @@ public class ObjectUtils {
 
             if (requestParamName.matches(regex) && splitParamName.length >= 2) {
                 attributeName = splitParamName[1];
-                setObjectAttributesValues(instance, attributeName, request.getParameter(requestParamName));
+
+                Field temp = instance.getClass().getDeclaredField(attributeName);
+
+                setObjectAttributesValues(instance, temp, request.getParameter(requestParamName));
             }
         }
 
