@@ -12,7 +12,10 @@ public class Validator {
 
         for(Annotation annotation : annotations) {
             FieldValidator validator = ValidatorRegistry.getValidator(annotation.annotationType());
-            validator.validate(value , annotation, field);
+
+            if (validator != null) {
+                validator.validate(value , annotation, field);
+            }
         }
     }
 }
