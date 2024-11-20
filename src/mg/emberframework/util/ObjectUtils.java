@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
@@ -72,32 +71,20 @@ public class ObjectUtils {
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException, SecurityException, NoSuchFieldException, ModelValidationException {
         Object instance = classType.getConstructor().newInstance();
+        Field[] fields = classType.getFields();
 
-        Enumeration<String> requestParams = request.getParameterNames();
-
-        String attributeName = null;
         String className = null;
-        String requestParamName = null;
-        String regex = null;
-        String[] splitParamName = null;
+        String paramName = null;
 
         className = annotationValue.split("\\.")[0];
-        regex = className + ".*";
 
-        while (requestParams.hasMoreElements()) {
-            requestParamName = requestParams.nextElement();
-            splitParamName = requestParamName.split("\\.");
+        for (Field field : fields) {
+            paramName = className + "." + field.getName();
+            String value = request.getParameter(paramName);
 
-            if (requestParamName.matches(regex) && splitParamName.length >= 2) {
-                String value = request.getParameter(requestParamName);
-                attributeName = splitParamName[1];
+            Validator.checkField(value, field);
 
-                Field temp = instance.getClass().getDeclaredField(attributeName);
-
-                Validator.checkField(value, temp);
-
-                setObjectAttributesValues(instance, temp, value);
-            }
+            setObjectAttributesValues(instance, field, value);
         }
 
         return instance;
