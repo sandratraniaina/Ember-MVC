@@ -27,7 +27,7 @@ public class ValidatorRegistry {
         validators.put(Numeric.class, new NumericValidator());
     }
     
-    public FieldValidator getValidator(Class<?extends Annotation> annotation) {
+    public static FieldValidator getValidator(Class<?extends Annotation> annotation) {
         return validators.get(annotation);
     }
 }
