@@ -11,11 +11,14 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import mg.emberframework.annotation.RequestParameter;
 import mg.emberframework.manager.data.File;
 import mg.emberframework.manager.data.Session;
+import mg.emberframework.manager.exception.ModelValidationException;
+import mg.emberframework.util.validation.Validator;
 
 public class ObjectUtils {
     private ObjectUtils() {
@@ -24,7 +27,7 @@ public class ObjectUtils {
     public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
             Object object)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-            NoSuchFieldException, IOException, ServletException {
+            NoSuchFieldException, IOException, ServletException, IllegalArgumentException, SecurityException, ModelValidationException {
         String strValue;
 
         RequestParameter annotatedType = parameter.getAnnotation(RequestParameter.class);
@@ -67,7 +70,7 @@ public class ObjectUtils {
 
     public static Object getObjectInstance(Class<?> classType, String annotationValue, HttpServletRequest request)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException, NoSuchFieldException {
+            NoSuchMethodException, SecurityException, NoSuchFieldException, ModelValidationException {
         Object instance = classType.getConstructor().newInstance();
 
         Enumeration<String> requestParams = request.getParameterNames();
@@ -86,11 +89,14 @@ public class ObjectUtils {
             splitParamName = requestParamName.split("\\.");
 
             if (requestParamName.matches(regex) && splitParamName.length >= 2) {
+                String value = request.getParameter(requestParamName);
                 attributeName = splitParamName[1];
 
                 Field temp = instance.getClass().getDeclaredField(attributeName);
 
-                setObjectAttributesValues(instance, temp, request.getParameter(requestParamName));
+                Validator.checkField(value, temp);
+
+                setObjectAttributesValues(instance, temp, value);
             }
         }
 

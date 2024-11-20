@@ -20,6 +20,7 @@ import mg.emberframework.manager.exception.DuplicateUrlException;
 import mg.emberframework.manager.exception.IllegalReturnTypeException;
 import mg.emberframework.manager.exception.InvalidControllerPackageException;
 import mg.emberframework.manager.exception.InvalidRequestException;
+import mg.emberframework.manager.exception.ModelValidationException;
 import mg.emberframework.manager.exception.UrlNotFoundException;
 import mg.emberframework.manager.handler.ExceptionHandler;
 import mg.emberframework.manager.url.Mapping;
@@ -45,7 +46,7 @@ public class MainProcess {
     public static void handleRequest(FrontController controller, HttpServletRequest request,
             HttpServletResponse response) throws IOException, UrlNotFoundException, ClassNotFoundException,
             NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException, AnnotationNotPresentException, InvalidRequestException {
+            InvocationTargetException, InstantiationException, ServletException, IllegalReturnTypeException, NoSuchFieldException, AnnotationNotPresentException, InvalidRequestException, ModelValidationException {
         PrintWriter out = response.getWriter();
         String verb = request.getMethod();
 
