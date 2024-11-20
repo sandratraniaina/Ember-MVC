@@ -15,11 +15,6 @@ public class DateValidator implements FieldValidator {
         DateType dateAnnotation = ((DateType) annotation);
         String format = dateAnnotation.format() != null ? dateAnnotation.format() : "yyyy-MM-dd";
 
-        if (value == null || value.trim().isEmpty()) {
-            throw new ModelValidationException(
-                    "The value for the field " + field.getName() + " cannot be null or empty.");
-        }
-
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         dateFormat.setLenient(false);
         try {
