@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-import mg.emberframework.annotation.validation.Date;
+import mg.emberframework.annotation.validation.DateType;
 import mg.emberframework.annotation.validation.Email;
 import mg.emberframework.annotation.validation.Length;
 import mg.emberframework.annotation.validation.Numeric;
@@ -21,7 +21,7 @@ public class ValidatorRegistry {
     
     static {
         validators.put(Length.class, new LengthValidator());
-        validators.put(Date.class, new DateValidator());
+        validators.put(DateType.class, new DateValidator());
         validators.put(Email.class, new EmailValidator());
         validators.put(Required.class, new RequiredValidator());
         validators.put(Numeric.class, new NumericValidator());
