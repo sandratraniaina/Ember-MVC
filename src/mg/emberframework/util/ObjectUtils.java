@@ -71,15 +71,15 @@ public class ObjectUtils {
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException, SecurityException, NoSuchFieldException, ModelValidationException {
         Object instance = classType.getConstructor().newInstance();
-        Field[] fields = classType.getFields();
+        Field[] fields = classType.getDeclaredFields();
 
         String className = null;
         String paramName = null;
 
-        className = annotationValue.split("\\.")[0];
+        className = annotationValue.split("\\.")[0] + ".";
 
         for (Field field : fields) {
-            paramName = className + "." + field.getName();
+            paramName = className + field.getName();
             String value = request.getParameter(paramName);
 
             Validator.checkField(value, field);
