@@ -6,10 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +26,8 @@ public class ObjectUtils {
     public static Object getParameterInstance(HttpServletRequest request, Parameter parameter, Class<?> clazz,
             Object object)
             throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-            NoSuchFieldException, IOException, ServletException, IllegalArgumentException, SecurityException, ModelValidationException {
+            NoSuchFieldException, IOException, ServletException, IllegalArgumentException, SecurityException,
+            ModelValidationException {
         String strValue;
 
         RequestParameter annotatedType = parameter.getAnnotation(RequestParameter.class);
@@ -49,7 +50,7 @@ public class ObjectUtils {
         } else if (clazz.equals(File.class)) {
             object = FileUtils.createRequestFile(annotationValue, request);
         } else {
-            
+
             if (parameter.isAnnotationPresent(RequestParameter.class)) {
                 object = ObjectUtils.getObjectInstance(clazz, annotationValue, request);
             }
@@ -99,6 +100,8 @@ public class ObjectUtils {
             return Double.parseDouble(value);
         } else if (clazz == Float.TYPE) {
             return Float.parseFloat(value);
+        } else if (clazz == Date.class) {
+            return Date.valueOf(LocalDate.parse(value));
         } else {
             return value;
         }
