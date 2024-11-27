@@ -10,7 +10,7 @@ public class RequestVerb {
 
     public static String getMethodVerb(Method method) {
         String verb = RequestVerb.GET;
-        if (method.isAnnotationPresent(mg.emberframework.annotation.request.POST.class)) {
+        if (method.isAnnotationPresent(mg.emberframework.annotation.request.Post.class)) {
             verb = RequestVerb.POST;
         }
         return verb;
