@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import mg.emberframework.annotation.Controller;
-import mg.emberframework.annotation.request.URL;
+import mg.emberframework.annotation.request.Url;
 import mg.emberframework.manager.data.RequestVerb;
 import mg.emberframework.manager.data.VerbMethod;
 import mg.emberframework.manager.exception.DuplicateUrlException;
@@ -30,10 +30,10 @@ public class PackageScanner {
         ArrayList<Class<?>> classes = (ArrayList<Class<?>>) PackageUtils.getClassesWithAnnotation(packageName,
                 Controller.class);
         for (Class<?> clazz : classes) {
-            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, URL.class);
+            List<Method> classMethods = PackageUtils.getClassMethodsWithAnnotation(clazz, Url.class);
 
             for (Method method : classMethods) {
-                URL methodAnnotation = method.getAnnotation(URL.class);
+                Url methodAnnotation = method.getAnnotation(Url.class);
                 String url = methodAnnotation.value();
                 
                 VerbMethod verbMethod = new VerbMethod(method, RequestVerb.getMethodVerb(method));
